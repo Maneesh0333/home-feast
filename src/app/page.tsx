@@ -2,64 +2,110 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div class="hero">
+      <div class="hero-left">
+        <div class="hero-eyebrow">Trusted home food platform</div>
+        <h1>
+          Fresh <em>homemade</em> meals, delivered daily
+        </h1>
+        <p>
+          Connect with verified home cooks near you. Choose daily, weekly, or
+          monthly meal plans tailored to your taste.
+        </p>
+        <div class="hero-ctas">
+          <button
+            class="btn-large primary"
+            onclick="document.querySelector('.search-section').scrollIntoView({behavior:'smooth'})"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            Find cooks nearby
+          </button>
+          <button
+            class="btn-large outline"
+            onclick="openModal('cook-signup-modal')"
           >
-            Documentation
-          </a>
+            Become a cook
+          </button>
         </div>
-      </main>
+        <div class="hero-stats">
+          <div class="stat">
+            <div class="n">1,240+</div>
+            <div class="l">Home cooks</div>
+          </div>
+          <div class="stat">
+            <div class="n">18,000+</div>
+            <div class="l">Happy subscribers</div>
+          </div>
+          <div class="stat">
+            <div class="n">12 cities</div>
+            <div class="l">And growing</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-card-stack">
+          <div class="hcard hcard-main">
+            <div class="cook-avatar-lg">👩‍🍳</div>
+            <div class="cook-card-name">Meera's Kitchen</div>
+            <div class="cook-card-sub">South Indian specialist · Thrissur</div>
+            <div class="rating-pill">
+              <span class="star">★</span> 4.8 · 340 subscribers
+            </div>
+            <div class="menu-preview">
+              <div class="menu-row">
+                <span class="name">Sambar rice + papad</span>
+                <span class="price">₹90</span>
+              </div>
+              <div class="menu-row">
+                <span class="name">Idli (4) + coconut chutney</span>
+                <span class="price">₹70</span>
+              </div>
+              <div class="menu-row">
+                <span class="name">Kerala fish curry + rice</span>
+                <span class="price">₹120</span>
+              </div>
+            </div>
+            <button
+              class="subscribe-btn-full"
+              style="margin-top:14px"
+              onclick="showProfile()"
+            >
+              View profile &amp; subscribe
+            </button>
+          </div>
+          <div class="hcard hcard-float1">
+            <div class="float-stat">
+              <div class="fn">₹24.8k</div>
+              <div class="fl">Monthly earnings</div>
+              <div class="fb">↑ 18% from last month</div>
+            </div>
+          </div>
+          <div class="hcard hcard-float2">
+            <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:10px">
+              Live activity
+            </div>
+            <div class="mini-list">
+              <div class="mini-row">
+                <div class="mini-dot dot-green"></div>
+                <span style="font-size:12px;color:var(--text2)">
+                  Anjali subscribed (weekly)
+                </span>
+              </div>
+              <div class="mini-row">
+                <div class="mini-dot dot-brand"></div>
+                <span style="font-size:12px;color:var(--text2)">
+                  Rahul renewed plan
+                </span>
+              </div>
+              <div class="mini-row">
+                <div class="mini-dot dot-navy"></div>
+                <span style="font-size:12px;color:var(--text2)">
+                  3 new reviews added
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
