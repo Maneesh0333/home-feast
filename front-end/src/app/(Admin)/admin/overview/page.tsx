@@ -13,30 +13,31 @@ import { QuickAction } from "@/app/types/(Cook)/overview";
 
 const adminActions: QuickAction[] = [
   {
-    icon: "✅",
-    title: "Approve Users",
-    description: "18 pending",
+    icon: "👨‍🍳",
+    title: "Approve Cooks",
+    description: "Review and verify new cook applications",
     path: "/admin/approvals",
   },
   {
-    icon: "🚨",
-    title: "Handle Complaints",
-    description: "23 open",
-    path: "/admin/complaints",
+    icon: "👥",
+    title: "Manage Users",
+    description: "View or suspend user accounts",
+    path: "/admin/users",
   },
   {
-    icon: "📊",
-    title: "View Analytics",
-    description: "Revenue & growth",
-    path: "/admin/analytics",
+    icon: "🍳", 
+    title: "Manage Cooks",
+    description: "View or suspend cooks accounts",
+    path: "/admin/cooks",
   },
   {
     icon: "🏷️",
-    title: "Handle Categories",
-    description: "Add new categories",
+    title: "Categories",
+    description: "Add or organize categories",
     path: "/admin/categories",
   },
 ];
+
 
 export default function Overview() {
   const isOnline = useNetworkStatus();

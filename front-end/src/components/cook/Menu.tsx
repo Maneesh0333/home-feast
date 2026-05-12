@@ -8,13 +8,13 @@ type Props = {
 
 export function MenuManager({ menu }: Props) {
   return (
-    <div className=" bg-white border border-[#E2DDD6] rounded-2xl p-5">
+    <div className="border rounded-2xl p-5">
       {menu.length === 0 ? (
         <div className="flex-1 h-full flex items-center justify-center">
           <p className="text-sm text-gray-500">No items found</p>
         </div>
       ) : (
-        <div className="flex flex-col divide-y divide-[#E2DDD6]">
+        <div className="flex flex-col">
           {menu.map((item) => (
             <div
               key={item._id}
@@ -23,7 +23,7 @@ export function MenuManager({ menu }: Props) {
               {/* LEFT */}
               <div className="space-y-1">
                 {/* Name */}
-                <div className="text-sm font-semibold text-[#1C1C1E]">
+                <div className="text-sm font-semibold">
                   {item.name}
                 </div>
 

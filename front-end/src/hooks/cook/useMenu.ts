@@ -8,10 +8,10 @@ export type MenuItem = {
   _id: string;
   name: string;
   price: number;
-  type: "veg" | "nonveg";
+  type: "Veg" | "Non-Veg";
   status: "Active" | "Inactive";
   description: string;
-  time: "lunch" | "dinner";
+  time: "Lunch" | "Dinner";
   calories: number;
   createdAt: string;
   availableToday: boolean;

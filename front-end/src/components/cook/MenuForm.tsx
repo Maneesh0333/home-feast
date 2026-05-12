@@ -2,14 +2,17 @@
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
-import { useEffect } from "react";
-
 import { FormField } from "../shared/FormField";
 import { SharedButton } from "../shared/SharedButton";
 import { SelectDropDown } from "../Select";
 import { Label } from "../ui/label";
 
-import { useCreateMenu, useUpdateMenu, MenuItem, useMenuType } from "@/hooks/cook/useMenu";
+import {
+  useCreateMenu,
+  useUpdateMenu,
+  MenuItem,
+  useMenuType,
+} from "@/hooks/cook/useMenu";
 import { createMenuSchema, updateMenuSchema } from "@/schemas/cook/menu.schema";
 import { FormType } from "@/types/cook/types";
 import { useAuthStore } from "@/stores/authStore";
@@ -22,8 +25,8 @@ type Props = {
 export default function MenuForm({ menu, closeSheet }: Props) {
   const createMutation = useCreateMenu();
   const updateMutation = useUpdateMenu();
-  const id = useAuthStore((state)=>state.user?.id);
-  const {data:menutype, isLoading} = useMenuType(id);
+  const id = useAuthStore((state) => state.user?.id);
+  const { data: menutype, isLoading } = useMenuType(id);
 
   console.log(menutype);
   const {
@@ -32,18 +35,18 @@ export default function MenuForm({ menu, closeSheet }: Props) {
     register,
     reset,
     formState: { isValid, isDirty, dirtyFields, errors },
-  } = useForm<FormType>({
+  } = useForm({
     resolver: yupResolver(menu ? updateMenuSchema : createMenuSchema),
     mode: "onChange",
     values: {
-        name: menu?.name || "",
-        price: menu?.price || 0,
-        type: menu?.type || "veg",
-        status: menu?.status || "Active",
-        calories: menu?.calories || 0,
-        description: menu?.description || "",
-        time: menu?.time || "lunch",
-    }
+      name: menu?.name || "",
+      price: menu?.price || 0,
+      type: menu?.type || "Veg",
+      status: menu?.status || "Active",
+      calories: menu?.calories || 0,
+      description: menu?.description || "",
+      time: menu?.time || "Lunch",
+    },
   });
 
   const onSubmit = (data: FormType) => {
@@ -127,9 +130,13 @@ export default function MenuForm({ menu, closeSheet }: Props) {
                 onChange={field.onChange}
                 loading={isLoading}
                 options={[
-                  { label: "Veg", value: "veg" },
-                  { label: "Non-Veg", value: "nonveg" },
-                ].filter((item)=> item.label === menutype?.mealType || menutype?.mealType === "Both")}
+                  { label: "Veg", value: "Veg" },
+                  { label: "Non-Veg", value: "Non-Veg" },
+                ].filter(
+                  (item) =>
+                    item.label === menutype?.mealType ||
+                    menutype?.mealType === "Both",
+                )}
                 className="w-full"
               />
               {fieldState.error && (
@@ -176,8 +183,8 @@ export default function MenuForm({ menu, closeSheet }: Props) {
                 value={field.value}
                 onChange={field.onChange}
                 options={[
-                  { label: "Lunch", value: "lunch" },
-                  { label: "Dinner", value: "dinner" },
+                  { label: "Lunch", value: "Lunch" },
+                  { label: "Dinner", value: "Dinner" },
                 ]}
                 className="w-full"
               />

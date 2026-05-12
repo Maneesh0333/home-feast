@@ -24,7 +24,7 @@ export default function CookApplicationRow({
     <tr className="border-t">
       <td className="px-4 py-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 font-semibold shrink-0 rounded-lg bg-orange-100 flex items-center justify-center text-lg">
+          <div className="w-10 h-10 font-semibold shrink-0 rounded-lg bg-[#EBF3FC] text-[#1A3C6B] flex items-center justify-center text-lg">
             {item?.user?.name[0]?.toUpperCase()}
           </div>
 

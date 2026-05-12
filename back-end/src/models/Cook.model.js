@@ -59,6 +59,17 @@ const cookSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
     },
+    location: {
+      type: {
+        type: String,
+        enum: ["Point"],
+        default: "Point",
+      },
+      coordinates: {
+        type: [Number], // [lng, lat]
+        required: true,
+      },
+    },
 
     lunchDeliveryTime: {
       start: { type: Number, min: 0, max: 1439 },
@@ -88,6 +99,8 @@ const cookSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
+
+cookSchema.index({ location: "2dsphere" });
 
 const Cook = mongoose.model("Cook", cookSchema);
 export default Cook;

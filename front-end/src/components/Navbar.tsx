@@ -136,12 +136,15 @@ export default function Navbar() {
         )}
 
         {/* Mobile Toggle */}
-        <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden text-2xl cursor-pointer"
-        >
-          ☰
-        </button>
+        <div className="flex gap-2 md:hidden">
+          <ModeToggle />
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="text-2xl cursor-pointer"
+          >
+            ☰
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}

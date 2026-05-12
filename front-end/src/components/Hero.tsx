@@ -1,10 +1,23 @@
+import { useHomeStats } from "@/hooks/user/useHomeStats";
 import { SignupModal } from "./modal/SignupModal";
-import { ModeToggle } from "./ModeToggle";
 import { Button } from "./ui/button";
+import Link from "next/link";
 
-export default function Hero() {
+type Props = {
+  scrollRef: React.RefObject<HTMLElement | null>;
+};
+
+export default function Hero({ scrollRef }: Props) {
+  const { data: stats } = useHomeStats();
+  const handleClick = () => {
+    scrollRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
   return (
-    <section className="relative grid md:grid-cols-2 gap-12 items-center">
+    <section className="relative grid md:grid-cols-2 gap-12 items-center px-16 max-md:px-6 py-10">
       {/* LEFT */}
       <div>
         {/* Eyebrow */}
@@ -28,6 +41,7 @@ export default function Hero() {
         {/* CTA */}
         <div className="flex flex-wrap gap-3">
           <Button
+            onClick={handleClick}
             size="xl"
             className="px-6 cursor-pointer rounded-xl bg-orange-500 text-white font-semibold shadow-md hover:bg-orange-600 hover:-translate-y-0.5 transition"
           >
@@ -48,14 +62,14 @@ export default function Hero() {
         <div className="flex gap-8 mt-10 pt-8 border-t">
           <div>
             <div className="text-2xl font-serif font-bold text-blue-900">
-              1,240+
+              {stats?.VerifiedCooks || 0}
             </div>
             <div className="text-sm text-gray-500">Home cooks</div>
           </div>
 
           <div>
             <div className="text-2xl font-serif font-bold text-blue-900">
-              18,000+
+              {stats?.Subscription || 0}
             </div>
             <div className="text-sm text-gray-500">Happy subscribers</div>
           </div>
@@ -69,74 +83,48 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* RIGHT */}
-      <div className="relative h-[420px]">
-        {/* Main Card */}
-        <div className="absolute right-0 top-0 w-80 bg-white rounded-2xl shadow-xl p-5 border z-30">
-          <div className="w-14 h-14 bg-orange-100 rounded-xl flex items-center justify-center text-2xl mb-3">
-            👩‍🍳
-          </div>
-
-          <div className="font-semibold text-gray-900">Meera's Kitchen</div>
-          <div className="text-xs text-gray-500">
-            South Indian specialist · Thrissur
-          </div>
-
-          <div className="mt-3 inline-flex items-center gap-1 text-black bg-gray-100 px-3 py-1 rounded-full text-xs font-semibold">
-            <span className="text-yellow-500">★</span> 4.8 · 340 subscribers
-          </div>
-
-          <div className="mt-4 space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-black">Sambar rice + papad</span>
-              <span className="text-orange-500 font-semibold">₹90</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-black">Idli (4) + chutney</span>
-              <span className="text-orange-500 font-semibold">₹70</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-black">Fish curry + rice</span>
-              <span className="text-orange-500 font-semibold">₹120</span>
-            </div>
-          </div>
-
-          <button className="mt-4 w-full bg-orange-500 text-white py-2 rounded-lg font-semibold hover:bg-orange-600 transition">
-            View profile & subscribe
-          </button>
-        </div>
-
-        {/* Floating Card 1 */}
-        <div className="absolute bottom-10 left-0 w-52 bg-blue-900 text-white rounded-2xl p-4 shadow-lg z-20">
-          <div className="text-2xl font-serif font-bold">₹24.8k</div>
-          <div className="text-xs opacity-70">Monthly earnings</div>
-          <div className="text-xs opacity-50 mt-2">↑ 18% from last month</div>
-        </div>
-
-        {/* Floating Card 2 */}
-        <div className="absolute top-16 left-6 w-44 bg-white rounded-2xl p-4 shadow-md border z-10">
-          <div className="text-xs text-black font-semibold mb-2">
-            Live activity
-          </div>
-
-          <div className="space-y-2 text-xs text-gray-600">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-              Anjali subscribed
+      {stats?.TopCook && (
+        <div className="relative h-[420px] max-md:hidden">
+          {/* Main Card */}
+          <div className="flex flex-col absolute right-0 top-0 w-80 bg-white rounded-2xl shadow-xl p-5 border z-30">
+            <div className="w-14 h-14 bg-orange-100 rounded-xl flex items-center justify-center text-2xl mb-3">
+              👩‍🍳
             </div>
 
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
-              Rahul renewed
+            <div className="font-semibold text-gray-900">
+              {stats?.TopCook?.kitchenName}
+            </div>
+            <div className="text-xs text-gray-500">
+              {stats?.TopCook?.user.name} · {stats?.TopCook?.user.city}
             </div>
 
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-blue-900 rounded-full"></span>3 new
-              reviews
+            <div className="mt-3 w-fit inline-flex items-center gap-1 text-black bg-gray-100 px-3 py-1 rounded-full text-xs font-semibold">
+              <span className="text-yellow-500">★</span>{" "}
+              {stats?.TopCook?.average} · {stats?.TopCook?.totalReviews} Reviews
             </div>
+
+            <div className="mt-4 space-y-2 text-sm">
+              {stats?.TopCook?.plans?.map((plan) => (
+                <div key={plan.type} className="flex justify-between">
+                  <span className="text-black">
+                    {plan?.type[0].toUpperCase() + plan?.type.slice(1)}
+                  </span>
+                  <span className="text-orange-500 font-semibold">
+                    ₹{plan?.price}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <Link
+              href={`/cook-profile/${stats?.TopCook?.user._id}`}
+              className="mt-4 w-full text-center bg-orange-500 text-white py-2 rounded-lg font-semibold hover:bg-orange-600 transition"
+            >
+              View profile & subscribe
+            </Link>
           </div>
         </div>
-      </div>
+      )}
     </section>
   );
 }

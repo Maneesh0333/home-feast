@@ -30,7 +30,7 @@ export default function PlanRow({
       <td className="px-4 py-4">₹{plan.price}</td>
 
       {/* STATUS */}
-      <td className="px-4 py-4">
+      <td className="px-4 py-4 whitespace-nowrap">
         <span
           className={`px-3 py-1 rounded-full text-xs font-medium ${
             plan.isActive

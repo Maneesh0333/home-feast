@@ -18,7 +18,7 @@ export default function ErrorState({
         onClick={onRetry}
         loading={isLoading}
         disabled={isLoading}
-        className="bg-black text-white hover:bg-black/70 w-fit"
+        className="bg-accent-foreground text-background hover:bg-accent-foreground/80 w-fit"
       >
         Try Again
       </SharedButton>

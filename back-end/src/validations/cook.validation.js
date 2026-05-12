@@ -31,6 +31,8 @@ export const updateCookProfileSchema = yup.object({
 
   city: yup.string().trim().max(30, "City is too long").notRequired(),
 
+  location: yup.array().of(yup.number().required()).min(2).max(2).notRequired(),
+
   category: yup.string().trim().notRequired(),
 
   kitchenName: yup

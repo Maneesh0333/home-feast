@@ -10,14 +10,13 @@ const menuSchema = new mongoose.Schema(
 
     description: {
       type: String,
-      required: true,
       trim: true,
       default: "",
     },
 
     time: {
       type: String,
-      enum: ["lunch", "dinner"],
+      enum: ["Lunch", "Dinner"],
       required: true,
     },
 
@@ -35,7 +34,7 @@ const menuSchema = new mongoose.Schema(
 
     type: {
       type: String,
-      enum: ["veg", "nonveg"],
+      enum: ["Veg", "Non-Veg"],
       required: true,
     },
 

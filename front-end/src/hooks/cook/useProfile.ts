@@ -23,6 +23,10 @@ export type CookProfile = {
     _id: string;
     name: string;
   };
+  location: {
+    type: "Point";
+    coordinates: [number, number];
+  };
   experienceYears: number;
   createdAt: string;
   mealType: "Veg" | "Non-Veg" | "Both";

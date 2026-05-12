@@ -66,7 +66,7 @@ export function SubscriptionModal({ cook, selectedPlan, plans }: Props) {
       {
         onSuccess: (data) => {
           if (data.success) {
-            setOpen(false); 
+            setOpen(false);
           }
         },
       },
@@ -80,7 +80,7 @@ export function SubscriptionModal({ cook, selectedPlan, plans }: Props) {
           onClick={() => setOpen(true)}
           disabled={!user}
           size="xllite"
-          className="w-full font-semibold bg-orange-500 text-white cursor-pointer"
+          className={`${!user ? "cursor-not-allowed!" : "cursor-pointer"} w-full font-semibold bg-orange-500 text-white`}
         >
           {user ? "Subscribe" : "Login first"}
         </Button>

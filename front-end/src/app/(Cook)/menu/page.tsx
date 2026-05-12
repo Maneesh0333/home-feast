@@ -71,7 +71,7 @@ export default function Menu() {
   }
 
   return (
-    <div className="flex-1 flex flex-col overflow-y-auto px-2 space-y-6">
+    <div className="flex-1 flex flex-col px-2 space-y-6">
       <Header
         title="Menu management"
         description="Add, edit and manage your daily menu"
@@ -136,7 +136,7 @@ export default function Menu() {
               "Actions",
             ]}
             data={menus}
-            colSpan={6}
+            colSpan={7}
             isFetching={isFetching}
             renderRow={(item) => (
               <MenuRow

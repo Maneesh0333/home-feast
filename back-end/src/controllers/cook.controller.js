@@ -44,9 +44,15 @@ export const getCookProfileById = asyncHandler(async (req, res) => {
     throw new AppError("Invalid ID", 400);
   }
 
-  const [plan, cook, menu] = await Promise.all([
-    Plan.find({ cook: id, isActive: true }).select("_id type price"),
-    Cook.findById(id)
+  const cookData = await Cook.findOne({ user: id }).select("_id");
+
+  if (!cookData) {
+    throw new AppError("Cook not found", 404);
+  }
+
+  const [plan, cook, menu, subscribers] = await Promise.all([
+    Plan.find({ cook: cookData._id, isActive: true }).select("_id type price"),
+    Cook.findById(cookData._id)
       .populate([
         {
           path: "user",
@@ -60,10 +66,11 @@ export const getCookProfileById = asyncHandler(async (req, res) => {
       .select("-updatedAt -isActive")
       .lean(),
     Menu.find({
-      cook: id,
+      cook: cookData._id,
       availableToday: true,
       status: "Active",
     }).lean(),
+    Subscription.countDocuments({ cook: cookData._id }),
   ]);
 
   if (!cook) {
@@ -73,7 +80,7 @@ export const getCookProfileById = asyncHandler(async (req, res) => {
   res.status(200).json({
     success: true,
     message: "Profile feached.",
-    data: { cook, plan, menu },
+    data: { cook, plan, menu, subscribers },
   });
 });
 
@@ -105,6 +112,11 @@ export const updateCookProfile = asyncHandler(async (req, res) => {
         } else if (key === "dinnerDeliveryTime") {
           const converted = convertTimeRange(value);
           if (converted) cookUpdates.dinnerDeliveryTime = converted;
+        } else if (key === "location") {
+          cookUpdates.location = {
+            type: "Point",
+            coordinates: value,
+          };
         } else {
           cookUpdates[key] = value;
         }
@@ -162,6 +174,9 @@ export const getSearchCookProfile = asyncHandler(async (req, res) => {
     cuisine = "All",
     page = 1,
     limit = 10,
+    planType = "All",
+    lat=0,
+    lng=0,
   } = req.query;
 
   const pageNum = Math.max(parseInt(page), 1);
@@ -169,18 +184,44 @@ export const getSearchCookProfile = asyncHandler(async (req, res) => {
   const skip = (pageNum - 1) * limitNum;
 
   const pipeline = [
-    {
-      $match: {
-        isActive: true,
-        verificationStatus: "Approved",
-        category: { $ne: null },
-        mealType: { $ne: "" },
-      },
-    },
+    ...(Number(lat)!==0 && Number(lng)!==0
+      ? [
+          {
+            $geoNear: {
+              near: {
+                type: "Point",
+                coordinates: [Number(lng), Number(lat)],
+              },
+
+              distanceField: "distance",
+
+              maxDistance: 10000, // 10km
+
+              spherical: true,
+
+              query: {
+                isActive: true,
+                verificationStatus: "Approved",
+                category: { $ne: null },
+                mealType: { $ne: "" },
+              },
+            },
+          },
+        ]
+      : [
+          {
+            $match: {
+              isActive: true,
+              verificationStatus: "Approved",
+              category: { $ne: null },
+              mealType: { $ne: "" },
+            },
+          },
+        ]),
     ...(type !== "Both"
       ? [
           {
-            $match: { mealType: type },
+            $match: { $or: [{ mealType: type }, { mealType: "Both" }] },
           },
         ]
       : []),
@@ -215,14 +256,20 @@ export const getSearchCookProfile = asyncHandler(async (req, res) => {
             },
           },
           {
-            $sort: { price: 1 }, 
+            $sort: { price: 1 },
           },
         ],
         as: "plans",
       },
     },
     { $match: { plans: { $ne: [] } } },
-
+    ...(planType !== "All"
+      ? [
+          {
+            $match: { "plans.type": planType },
+          },
+        ]
+      : []),
     {
       $lookup: {
         from: "users",
@@ -256,8 +303,11 @@ export const getSearchCookProfile = asyncHandler(async (req, res) => {
         "rating.average": 1,
         cheapestPlan: { $arrayElemAt: ["$plans", 0] },
         mealType: 1,
-        // categories: "$category.name",
+        distance: {
+          $round: [{ $divide: ["$distance", 1000] }, 1],
+        },
         user: {
+          _id: "$user._id",
           name: "$user.name",
           city: "$user.city",
         },
@@ -268,7 +318,12 @@ export const getSearchCookProfile = asyncHandler(async (req, res) => {
     {
       $facet: {
         data: [
-          { $sort: { "rating.average": -1 } },
+          {
+            $sort:
+              Number(lat)!==0 && Number(lng)!==0
+                ? { distance: 1 } // nearest first
+                : { "rating.average": -1 },
+          },
           { $skip: skip },
           { $limit: limitNum },
         ],

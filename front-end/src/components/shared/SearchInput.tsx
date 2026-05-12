@@ -17,7 +17,7 @@ export default function SearchInput({
 }: SearchInputProps) {
   const [input, setInput] = useState(value);
 
-  const [debouncedValue] = useDebounce(input, 500);
+  const [debouncedValue] = useDebounce(input, 1000);
 
   /* 🔥 Sync with parent */
   useEffect(() => {
@@ -25,8 +25,10 @@ export default function SearchInput({
   }, [value]);
 
   useEffect(() => {
-    onChange(debouncedValue);
-  }, [debouncedValue, onChange]);
+    if (debouncedValue !== value) {
+      onChange(debouncedValue);
+    }
+  }, [debouncedValue]);
 
   return (
     <Input

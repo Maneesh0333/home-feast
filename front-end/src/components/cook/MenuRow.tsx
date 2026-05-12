@@ -33,22 +33,22 @@ export default function MenuRow({
       <td className="px-4 py-4">₹{item.price}</td>
 
       {/* TYPE */}
-      <td className="px-4 py-4">
+      <td className="px-4 py-4 whitespace-nowrap">
         <span
           className={`px-2 py-1 rounded-full text-xs font-medium ${
-            item.type === "veg"
+            item.type === "Veg"
               ? "bg-green-100 text-green-700"
               : "bg-red-100 text-red-700"
           }`}
         >
-          {item.type === "veg" ? "Veg" : "Non-Veg"}
+          {item.type === "Veg" ? "Veg" : "Non-Veg"}
         </span>
       </td>
 
       {/* STATUS */}
-      <td className="px-4 py-4">
+      <td className="px-4 py-4 whitespace-nowrap">
         <span
-          className={`px-3 py-1 rounded-full text-xs whitespace-nowrap font-medium ${
+          className={`px-3 py-1 rounded-full text-xs font-medium ${
             item.status === "Active"
               ? "bg-green-100 text-green-700"
               : "bg-gray-200 text-gray-700"

@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import axiosApi from "@/lib/axios";
 import type { AxiosError } from "axios";
 import { ResponseType } from "@/types/Shared/types";
+import { MealType, PlanType } from "@/types/user/types";
 
 /* ---------------- TYPES ---------------- */
 export type CookProfile = {
@@ -38,17 +39,23 @@ export const useSearchCookProfiles = ({
   search = "",
   type,
   cuisine,
+  planType,
+  lat,
+  lng,
   page = 1,
   limit = 10,
 }: {
   search?: string;
-  type?: "Veg" | "Non-Veg" | "Both";
+  type?: MealType;
   cuisine?: string;
+  planType?: PlanType;
+  lat?: number;
+  lng?: number;
   page?: number;
   limit?: number;
 }) => {
   return useQuery<ApiResponse, AxiosError<ResponseType>>({
-    queryKey: ["cooks", search, type, cuisine, page, limit],
+    queryKey: ["cooks", search, type, cuisine, page, limit, planType, lat, lng],
 
     queryFn: async () => {
       const res = await axiosApi.get<ApiResponse>("/cooks/search/profile", {
@@ -58,13 +65,16 @@ export const useSearchCookProfiles = ({
           cuisine,
           page,
           limit,
+          planType,
+          lat,
+          lng
         },
       });
 
       return res.data;
     },
 
-    placeholderData: (prev) => prev, 
+    placeholderData: (prev) => prev,
     refetchOnReconnect: true,
     refetchOnWindowFocus: false,
   });

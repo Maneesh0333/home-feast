@@ -15,15 +15,20 @@ import { Spinner } from "../ui/spinner";
 import { useNetworkStatus } from "@/utils/useNetworkStatus";
 import NoInternet from "../shared/NoInternet";
 import ErrorState from "../shared/ErrorState";
+import CookReviews from "./CookReviews";
 
 export default function ProfileClient({ id }: { id: string }) {
-  const { data, isLoading, isError, refetch, isFetching } = useGetCookProfileById(id);
+  const { data, isLoading, isError, refetch, isFetching } =
+    useGetCookProfileById(id);
 
   const cook = data?.cook;
   const plans = data?.plan;
   const menu = data?.menu;
+  const subscribers = data?.subscribers;
 
-  const [selectedPlan, setSelectedPlan] = useState<"weekly" | "daily" | "monthly">("weekly");
+  const [selectedPlan, setSelectedPlan] = useState<
+    "weekly" | "daily" | "monthly"
+  >("weekly");
   const isOnline = useNetworkStatus();
 
   if (!isOnline) {
@@ -71,12 +76,16 @@ export default function ProfileClient({ id }: { id: string }) {
                   </h2>
 
                   <p className="text-sm text-gray-500 mt-0.5">
-                    📍 {cook?.user?.city || "City not Added"} · Delivers within 3
+                    {cook &&
+                      cook?.user?.name[0]?.toUpperCase() +
+                        cook?.user?.name?.slice(1)}{" "}
+                    ·📍{cook?.user?.city || "City not Added"}
                     km
                   </p>
 
                   <span className="inline-block mt-1 text-xs font-semibold bg-green-100 text-green-700 px-2 py-1 rounded">
-                    {cook?.verificationStatus === "Approved" && "✓ Verified cook"}
+                    {cook?.verificationStatus === "Approved" &&
+                      "✓ Verified cook"}
                   </span>
                 </div>
               </CardHeader>
@@ -95,7 +104,7 @@ export default function ProfileClient({ id }: { id: string }) {
                   </div>
                   <div>
                     <div className="text-2xl text-center font-bold text-blue-900">
-                      340
+                      {subscribers || 0}
                     </div>
                     <div className="text-xs text-gray-500">Subscribers</div>
                   </div>
@@ -143,7 +152,6 @@ export default function ProfileClient({ id }: { id: string }) {
                               : plan?.type === "weekly"
                                 ? "Great for busy weekdays"
                                 : "Our most popular and cost-effective plan"}
-                            
                           </div>
                         </div>
 
@@ -168,40 +176,52 @@ export default function ProfileClient({ id }: { id: string }) {
 
               {/* Footer */}
               <CardFooter className="border-0 bg-transparent">
-                <SubscriptionModal plans={plans} selectedPlan={selectedPlan} cook={cook} />
+                <SubscriptionModal
+                  plans={plans}
+                  selectedPlan={selectedPlan}
+                  cook={cook}
+                />
               </CardFooter>
             </Card>
           </div>
 
           {/* MENU */}
           <div className="mt-10">
-            <h3 className="font-semibold text-xl mb-4">Today's menu</h3>
+            <h3 className="font-semibold text-2xl mb-4">Today's menu</h3>
 
-            <div className="grid grid-cols-2 max-md:grid-cols-1 gap-3">
-              {menu?.map((item, i) => (
-                <div
-                  key={i}
-                  className="flex justify-between items-center border rounded-xl p-4"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="text-2xl">🍗</div>
-                    <div>
-                      <div className="font-semibold text-base">
-                        {item?.name[0].toUpperCase() + item?.name.slice(1)}
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        {item?.type} · ~{item?.calories} kcal
+            {menu && menu?.length > 0 ? (
+              <div className="grid grid-cols-2 max-md:grid-cols-1 gap-3">
+                {menu?.map((item, i) => (
+                  <div
+                    key={i}
+                    className="flex justify-between items-center border rounded-xl p-4"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="text-2xl">🍗</div>
+                      <div>
+                        <div className="font-semibold text-base">
+                          {item?.name[0].toUpperCase() + item?.name.slice(1)}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {item?.type} · ~{item?.calories} kcal
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="text-orange-500 font-semibold">
-                    ₹{item?.price}
+                    <div className="text-orange-500 font-semibold">
+                      ₹{item?.price}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex h-50 w-full border rounded-2xl text-sm items-center justify-center">
+                No today's menu yet
+              </div>
+            )}
           </div>
+
+          <CookReviews cookId={id} />
         </>
       )}
     </div>

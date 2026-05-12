@@ -53,7 +53,7 @@ export default function Users() {
     );
   }
   return (
-    <div className="h-full flex flex-col overflow-y-auto px-2 space-y-6">
+    <div className="h-full flex flex-col px-2 space-y-6">
       <Header
         title="User Management"
         description={`${data?.totalUsers || 0} registered customers`}

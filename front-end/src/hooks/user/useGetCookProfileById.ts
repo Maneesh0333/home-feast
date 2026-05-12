@@ -54,6 +54,7 @@ type ApiResponse = ResponseType & {
     cook: CookProfileDetail;
     plan: Plan[];
     menu: MenuItem[];
+    subscribers: number;
   };
 };
 

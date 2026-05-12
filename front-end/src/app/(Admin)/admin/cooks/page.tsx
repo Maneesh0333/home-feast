@@ -55,7 +55,7 @@ export default function Cooks() {
   }
 
   return (
-    <div className="h-full flex flex-col overflow-y-auto px-2 space-y-6">
+    <div className="h-full flex flex-col px-2 space-y-6">
       <Header
         title="Cook Management"
         description={`${data?.totalCooks || 0} registered cooks`}

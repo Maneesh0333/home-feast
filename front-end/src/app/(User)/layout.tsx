@@ -1,10 +1,34 @@
+"use client";
+
 import Navbar from "@/components/Navbar";
+import { Spinner } from "@/components/ui/spinner";
+import { useAuthStore } from "@/stores/authStore";
+import { useRouter } from "next/navigation";
 
 export default function UserLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const router = useRouter();
+  const user = useAuthStore((state) => state.user);
+  const loading = useAuthStore((state) => state.loading);
+
+  if (loading || user === undefined) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (!user) {
+    router.replace("/");
+  }
+
+  if (user?.role !== "User") {
+    router.replace("/");
+  }
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />

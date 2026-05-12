@@ -36,6 +36,8 @@ export const updateCookProfileSchema = yup.object({
     .notRequired()
     .default(""),
 
+  location: yup.array().of(yup.number().required()).min(2).max(2),
+
   mealType: yup
     .string()
     .trim()
@@ -43,11 +45,7 @@ export const updateCookProfileSchema = yup.object({
     .notRequired()
     .default("Both"),
 
-  category: yup
-    .string()
-    .trim()
-    .notRequired()
-    .default(""),
+  category: yup.string().trim().notRequired().default(""),
 
   kitchenName: yup
     .string()

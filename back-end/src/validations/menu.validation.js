@@ -18,13 +18,13 @@ export const createMenuSchema = yup
 
     type: yup
       .string()
-      .oneOf(["veg", "nonveg"], "Invalid type")
+      .oneOf(["Veg", "Non-Veg"])
       .required("Type is required")
       .default("veg"),
 
     status: yup
       .string()
-      .oneOf(["Active", "Inactive"], "Invalid status")
+      .oneOf(["Active", "Inactive"])
       .default("Active"),
 
     calories: yup
@@ -35,14 +35,14 @@ export const createMenuSchema = yup
 
     time: yup
       .string()
-      .oneOf(["lunch", "dinner"], "Invalid time")
-      .default("lunch"),
+      .oneOf(["Lunch", "Dinner"])
+      .required(),
 
     description: yup
       .string()
       .trim()
       .max(100, "Description cannot exceed 100 characters")
-      .default(""),
+      .optional()
   })
   .noUnknown(true, "Unknown field is not allowed");
 

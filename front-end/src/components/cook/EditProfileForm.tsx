@@ -1,8 +1,8 @@
 "use client";
 
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Controller, useForm } from "react-hook-form";
-import { useEffect } from "react";
+import { Controller, useForm, useWatch } from "react-hook-form";
+import { useState } from "react";
 
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,7 +13,15 @@ import { CookProfile, useUpdateProfile } from "@/hooks/cook/useProfile";
 import { updateCookProfileSchema } from "@/schemas/cook/profile.schema";
 import SelectInput from "../shared/SelectInput";
 import { minutesToTime } from "@/utils/minutesToTime";
+import dynamic from "next/dynamic";
 import { useCategories } from "@/hooks/shared/useCategory";
+const LeafletMaps = dynamic(() => import("./LeafletMaps"), {
+  ssr: false,
+});
+import { Button } from "../ui/button";
+import { getMyLocation } from "@/utils/getMyLocation";
+import { toast } from "sonner";
+import { Spinner } from "../ui/spinner";
 
 type Props = {
   profile: CookProfile | undefined;
@@ -24,12 +32,13 @@ export default function EditProfileForm({ profile, onClose }: Props) {
   const updateMutation = useUpdateProfile();
   const { data, isLoading } = useCategories();
   const category = data || [];
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
     handleSubmit,
     reset,
-    watch,
+    setValue,
     control,
     formState: { isDirty, isValid, dirtyFields, errors },
   } = useForm({
@@ -40,6 +49,7 @@ export default function EditProfileForm({ profile, onClose }: Props) {
       email: profile?.user?.email || "",
       phone: profile?.user?.phone || "",
       city: profile?.user?.city || "",
+      location: profile?.location?.coordinates || [78.9629, 20.5937],
       category: profile?.category?._id || "",
       kitchenName: profile?.kitchenName || "",
       bio: profile?.bio || "",
@@ -58,6 +68,11 @@ export default function EditProfileForm({ profile, onClose }: Props) {
     },
   });
 
+  const location = useWatch({
+    control: control,
+    name: "location",
+  });
+
   const onSubmit = (data: any) => {
     const filtered = Object.fromEntries(
       Object.entries(data).filter(([key]) =>
@@ -73,6 +88,23 @@ export default function EditProfileForm({ profile, onClose }: Props) {
     });
   };
 
+  const handleClick = async () => {
+    try {
+      setLoading(true);
+      const location = await getMyLocation();
+
+      setValue("location", location, {
+        shouldDirty: true,
+      });
+
+      toast.success("Location fetched");
+    } catch {
+      toast.error("Failed to get location");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -84,6 +116,7 @@ export default function EditProfileForm({ profile, onClose }: Props) {
           label="Name"
           register={register("name")}
           error={errors.name?.message}
+          placeholder="Enter Name"
         />
 
         <FormField
@@ -91,6 +124,7 @@ export default function EditProfileForm({ profile, onClose }: Props) {
           label="Email"
           register={register("email")}
           error={errors.email?.message}
+          placeholder="Enter Email"
         />
 
         <FormField
@@ -98,6 +132,7 @@ export default function EditProfileForm({ profile, onClose }: Props) {
           label="Phone"
           register={register("phone")}
           error={errors.phone?.message}
+          placeholder="Enter Phone no."
         />
 
         <FormField
@@ -105,11 +140,35 @@ export default function EditProfileForm({ profile, onClose }: Props) {
           label="City"
           register={register("city")}
           error={errors.city?.message}
+          placeholder="Enter City"
         />
+
+        {/* Map */}
+        <div>
+          <Label className="mb-1">Location</Label>
+          <div className="h-40 w-full rounded-xl overflow-hidden">
+            <LeafletMaps
+              location={[location?.[1], location?.[0]] as [number, number]}
+              onChange={(newLocation) => {
+                setValue("location", [newLocation[1], newLocation[0]], {
+                  shouldDirty: true,
+                });
+              }}
+            />
+          </div>
+          <Button
+            type="button"
+            onClick={handleClick}
+            className="mt-2 w-full cursor-pointer"
+          >
+            {loading ? <Spinner className="h-4 w-4" /> : "Get my location"}
+          </Button>
+        </div>
 
         <FormField
           id="kitchenName"
           label="Kitchen Name"
+          placeholder="Enter Kitchen Name"
           register={register("kitchenName")}
           error={errors.kitchenName?.message}
         />
@@ -152,7 +211,11 @@ export default function EditProfileForm({ profile, onClose }: Props) {
 
         <div>
           <Label>Bio</Label>
-          <Textarea {...register("bio")} className="ring-0! mt-1 resize-none" />
+          <Textarea
+            placeholder="Enter a bio"
+            {...register("bio")}
+            className="ring-0! mt-1 resize-none"
+          />
           {errors.bio && (
             <p className="text-xs text-red-500">{errors.bio.message}</p>
           )}
@@ -163,6 +226,7 @@ export default function EditProfileForm({ profile, onClose }: Props) {
           label="Experience"
           type="number"
           register={register("experienceYears")}
+          placeholder="Enter Experience Years"
           error={errors.experienceYears?.message}
         />
 
