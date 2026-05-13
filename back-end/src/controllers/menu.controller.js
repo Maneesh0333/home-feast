@@ -135,8 +135,8 @@ export const getMenu = asyncHandler(async (req, res) => {
   const result = await Menu.aggregate(pipeline);
   const data = result[0];
 
-  /* ✅ Build stats object (same pattern as categories) */
-  const stats = { veg: 0, nonveg: 0 };
+  /* Build stats object (same pattern as categories) */
+  const stats = { Veg: 0, "Non-Veg": 0 };
 
   (data.stats || []).forEach((s) => {
     stats[s._id] = s.count;
