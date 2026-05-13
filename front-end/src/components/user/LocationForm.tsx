@@ -1,11 +1,10 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { useDebounce } from "use-debounce";
 import SearchInput from "../shared/SearchInput";
 import { Spinner } from "../ui/spinner";
 import { SharedButton } from "../shared/SharedButton";
+import { useLocationSearch } from "@/hooks/user/useLocationSearch";
 
 type Props = {
   setLocation: (v: [number, number]) => void;
@@ -19,28 +18,11 @@ export default function LocationForm({
   locationsearch,
   setLocationsearch,
 }: Props) {
-  const [debouncedSearch] = useDebounce(locationsearch, 800);
   const [locationLatLng, setLocationLatLng] = useState<[number, number]>([
     0, 0,
   ]);
 
-  const { data = [], isLoading } = useQuery({
-    queryKey: ["location-search", debouncedSearch],
-
-    queryFn: async () => {
-      if (debouncedSearch.trim().length < 3) return [];
-
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-          debouncedSearch,
-        )}&addressdetails=1&limit=5`,
-      );
-
-      return res.json();
-    },
-    enabled: debouncedSearch.trim().length >= 3,
-    staleTime: 1000 * 60 * 5,
-  });
+  const { data = [], isLoading } = useLocationSearch(locationsearch);
 
   return (
     <div className="flex flex-col h-full justify-between">
@@ -66,7 +48,7 @@ export default function LocationForm({
             {data.length > 0 && (
               <>
                 <div className="absolute w-full border rounded-lg mt-1 overflow-hidden">
-                  {data.map((place: any) => (
+                  {data.map((place) => (
                     <button
                       key={place.place_id}
                       onClick={() => {

@@ -2,7 +2,6 @@
 
 import Header from "@/components/shared/Header";
 import StatsGrid from "@/components/shared/StatsGrid";
-import { ChartBar } from "@/components/shared/BarChart";
 import { useCookOverview } from "@/hooks/cook/useCookOverview";
 import { Spinner } from "@/components/ui/spinner";
 import QuickActions from "@/components/shared/QuickActions";
@@ -10,32 +9,45 @@ import { QuickAction } from "@/app/types/(Cook)/overview";
 import ErrorState from "@/components/shared/ErrorState";
 import NoInternet from "@/components/shared/NoInternet";
 import { useNetworkStatus } from "@/utils/useNetworkStatus";
+import dynamic from "next/dynamic";
+
+const ChartBar = dynamic(() => import("@/components/shared/BarChart"), {
+  ssr: false,
+
+  loading: () => (
+    <div className="h-[400px] rounded-xl border bg-muted animate-pulse flex items-center justify-center">
+      <p className="text-sm text-muted-foreground">Loading chart...</p>
+    </div>
+  ),
+});
+
+
 
 export default function Overview() {
   const adminActions: QuickAction[] = [
     {
-      icon: "✅",
-      title: "Handle Orders",
-      description: "",
+      icon: "📦",
+      title: "Orders",
+      description: "Handle orders",
       path: "/orders",
     },
     {
-      icon: "🚨",
-      title: "Handle Complaints",
-      description: "23 open",
-      path: "/admin/complaints",
+      icon: "💰",
+      title: "Earnings",
+      description: "See earnings",
+      path: "/earnings",
     },
     {
-      icon: "📊",
-      title: "View Analytics",
-      description: "Revenue & growth",
-      path: "/admin/analytics",
+      icon: "📜",
+      title: "Menu",
+      description: "Add, edit and manage your daily menu",
+      path: "/menu",
     },
     {
-      icon: "🏷️",
-      title: "Handle Categories",
-      description: "Add new categories",
-      path: "/admin/categories",
+      icon: "💳",
+      title: "Plans",
+      description: "Handle Subscription Plans",
+      path: "/plans",
     },
   ];
 
@@ -68,7 +80,7 @@ export default function Overview() {
     {
       label: "Avg rating",
       value: data?.rating.average + " ★" || "0 ★",
-      sub: data?.rating.totalReviews + " reviews"  ,
+      sub: data?.rating.totalReviews + " reviews",
     },
   ];
 

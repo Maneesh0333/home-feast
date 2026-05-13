@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import {
@@ -13,7 +13,6 @@ import { registerSchema } from "@/schemas/auth/auth.schema";
 import { FormField } from "../shared/FormField";
 import { RoleSelector } from "../auth/RoleSelector";
 import { AuthButton } from "./AuthButton";
-import { AuthFooter } from "../auth/AuthFooter";
 import { RegisterFormType } from "@/types/auth/types";
 import { useRegister } from "@/hooks/Auth/useRegister";
 import { useRouter } from "next/navigation";
@@ -28,7 +27,7 @@ export function SignupForm({ role }: Props) {
     register,
     handleSubmit,
     setValue,
-    watch,
+    control,
     formState: { errors, isValid },
   } = useForm<RegisterFormType>({
     resolver: yupResolver(registerSchema),
@@ -38,11 +37,13 @@ export function SignupForm({ role }: Props) {
     },
   });
 
-  const signupAs = watch("signupAs");
+  const signupAs = useWatch({
+    control: control,
+    name: "signupAs"
+  });
   const { mutate, isPending } = useRegister();
 
   const onSubmit = async (data: RegisterFormType) => {
-    console.log("Form Submitted:", data);
     mutate(data, {
       onSuccess: () => {
         router.push(`/auth/verify?email=${encodeURIComponent(data.email)}`);
@@ -107,7 +108,6 @@ export function SignupForm({ role }: Props) {
           Create account
         </AuthButton>
 
-        <AuthFooter text="Already have an account?" actionText="Log in" />
       </form>
     </>
   );

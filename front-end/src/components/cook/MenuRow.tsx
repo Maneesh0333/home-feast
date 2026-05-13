@@ -1,13 +1,12 @@
-import { MenuItem } from "@/hooks/cook/useMenu";
-import type { UseMutationResult } from "@tanstack/react-query";
+import { MenuItem, useDisableMenus, useEnableMenus, useToggleTodayMenu } from "@/hooks/cook/useMenu";
 import { ActionButton } from "../shared/ActionButton";
 import { Switch } from "../ui/switch";
 
 type Props = {
   item: MenuItem;
-  disableMutation: UseMutationResult<any, Error, string>;
-  enableMutation: UseMutationResult<any, Error, string>;
-  toggleTodayMutation: UseMutationResult<any, Error, string>;
+  disableMutation: ReturnType<typeof useDisableMenus>;
+  enableMutation: ReturnType<typeof useEnableMenus>;
+  toggleTodayMutation: ReturnType<typeof useToggleTodayMenu>;
   onEdit: (menu: MenuItem) => void;
 };
 

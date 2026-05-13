@@ -9,11 +9,14 @@ import { Spinner } from "@/components/ui/spinner";
 
 import { useCookEarnings } from "@/hooks/cook/useCookEarnings";
 import { useNetworkStatus } from "@/utils/useNetworkStatus";
+import Pagination from "@/components/shared/Pagination";
+import { useState } from "react";
 
 export default function Earnings() {
+  const [page, setPage] = useState(1);
   const isOnline = useNetworkStatus();
 
-  const { data, isLoading, isError, isFetching, refetch } = useCookEarnings();
+  const { data, isLoading, isError, isFetching, refetch } = useCookEarnings(page);
 
   if (!isOnline) return <NoInternet />;
 
@@ -63,6 +66,11 @@ export default function Earnings() {
           <EarningHistory history={data?.history} />
         </div>
       )}
+      <Pagination
+        page={data?.page ?? 1}
+        totalPages={data?.totalPages ?? 1}
+        onPageChange={setPage}
+      />
     </div>
   );
 }

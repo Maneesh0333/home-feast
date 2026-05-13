@@ -1,7 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
-
-import { useEffect } from "react";
 import { FormField } from "../shared/FormField";
 import {
   Category,
@@ -37,28 +35,12 @@ export default function CategoryForm({ category, closeSheet }: Props) {
       category ? updateCategorySchema : createCategorySchema,
     ),
     mode: "onChange",
-    defaultValues: {
-      name: "",
-      description: "",
-      status: "Active",
+    values: {
+      name: category?.name || "",
+      description: category?.description || "",
+      status: category?.status || "Active",
     },
   });
-
-  useEffect(() => {
-    if (category) {
-      reset({
-        name: category.name || "",
-        description: category.description || "",
-        status: category.status || "Active",
-      });
-    } else {
-      reset({
-        name: "",
-        description: "",
-        status: "Active",
-      });
-    }
-  }, [category, reset]);
 
   const onSubmit = (data: FormType) => {
     if (category) {

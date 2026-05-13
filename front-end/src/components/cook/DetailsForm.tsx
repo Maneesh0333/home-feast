@@ -1,18 +1,6 @@
 "use client";
 
-import { yupResolver } from "@hookform/resolvers/yup";
-import { Controller, useForm } from "react-hook-form";
-import { useEffect } from "react";
-
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { SharedButton } from "@/components/shared/SharedButton";
-import { FormField } from "@/components/shared/FormField";
-
-import { CookProfile, useUpdateProfile } from "@/hooks/cook/useProfile";
-import { updateCookProfileSchema } from "@/schemas/cook/profile.schema";
-import SelectInput from "../shared/SelectInput";
-import { minutesToTime } from "@/utils/minutesToTime";
 import { Input } from "../ui/input";
 import { Subscription } from "@/hooks/cook/useCookRequests";
 

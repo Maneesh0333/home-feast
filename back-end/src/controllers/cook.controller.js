@@ -175,8 +175,8 @@ export const getSearchCookProfile = asyncHandler(async (req, res) => {
     page = 1,
     limit = 10,
     planType = "All",
-    lat=0,
-    lng=0,
+    lat = 0,
+    lng = 0,
   } = req.query;
 
   const pageNum = Math.max(parseInt(page), 1);
@@ -184,7 +184,7 @@ export const getSearchCookProfile = asyncHandler(async (req, res) => {
   const skip = (pageNum - 1) * limitNum;
 
   const pipeline = [
-    ...(Number(lat)!==0 && Number(lng)!==0
+    ...(Number(lat) !== 0 && Number(lng) !== 0
       ? [
           {
             $geoNear: {
@@ -320,7 +320,7 @@ export const getSearchCookProfile = asyncHandler(async (req, res) => {
         data: [
           {
             $sort:
-              Number(lat)!==0 && Number(lng)!==0
+              Number(lat) !== 0 && Number(lng) !== 0
                 ? { distance: 1 } // nearest first
                 : { "rating.average": -1 },
           },
@@ -349,6 +349,12 @@ export const getSearchCookProfile = asyncHandler(async (req, res) => {
 });
 
 export const getCookEarnings = asyncHandler(async (req, res) => {
+  const { page = 1, limit = 5 } = req.query;
+
+  const pageNum = Math.max(parseInt(page), 1);
+  const limitNum = Math.min(Math.max(parseInt(limit), 1), 50);
+  const skip = (pageNum - 1) * limitNum;
+
   const cook = await Cook.findOne({ user: req.user.id }).select("_id");
 
   if (!cook) {
@@ -393,7 +399,8 @@ export const getCookEarnings = asyncHandler(async (req, res) => {
         /* ================== HISTORY ================== */
         history: [
           { $sort: { createdAt: -1 } },
-          { $limit: 20 },
+          { $skip: skip },
+          { $limit: limitNum },
           {
             $project: {
               date: "$createdAt",
@@ -402,6 +409,12 @@ export const getCookEarnings = asyncHandler(async (req, res) => {
               amount: "$price",
               paymentStatus: 1,
             },
+          },
+        ],
+
+        total: [
+          {
+            $count: "count",
           },
         ],
 
@@ -451,6 +464,7 @@ export const getCookEarnings = asyncHandler(async (req, res) => {
 
   const result = await Subscription.aggregate(pipeline);
   const data = result[0];
+  const total = data.total?.[0]?.count || 0;
 
   res.status(200).json({
     success: true,
@@ -461,6 +475,9 @@ export const getCookEarnings = asyncHandler(async (req, res) => {
         monthlyRevenue: data.monthlyPlanRevenue?.[0]?.total || 0,
       },
       history: data.history || [],
+      page: pageNum,
+      page: pageNum,
+      totalPages: Math.ceil(total / limitNum)
     },
   });
 });
@@ -588,12 +605,6 @@ export const getCookOverview = asyncHandler(async (req, res) => {
 
 export const createReview = asyncHandler(async (req, res) => {
   const { subscriptionId, rating, comment } = req.body;
-
-  /* ---------------- Validate ---------------- */
-
-  if (!rating || rating < 1 || rating > 5) {
-    throw new AppError("Rating must be between 1 and 5", 400);
-  }
 
   const subscription = await Subscription.findById(subscriptionId);
 

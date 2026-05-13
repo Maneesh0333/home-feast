@@ -21,7 +21,7 @@ export default function Hero({ scrollRef }: Props) {
       {/* LEFT */}
       <div>
         {/* Eyebrow */}
-        <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-600 text-xs font-semibold px-3 py-1 rounded-full mb-5 uppercase tracking-wide">
+        <div className="inline-flex items-center gap-2 bg-card border text-orange-600 text-xs font-semibold px-3 py-1 rounded-full mb-5 uppercase tracking-wide">
           <span className="w-1.5 h-1.5 bg-orange-600 rounded-full animate-pulse" />
           Trusted home food platform
         </div>
@@ -51,7 +51,7 @@ export default function Hero({ scrollRef }: Props) {
           <SignupModal role="Cook">
             <Button
               size="xl"
-              className="px-6 cursor-pointer rounded-xl border border-blue-900 bg-white text-blue-900 font-semibold hover:bg-blue-900 hover:text-white transition"
+              className="px-6 cursor-pointer rounded-xl border border-blue-900 bg-card text-blue-900 font-semibold hover:bg-blue-900 hover:text-white transition"
             >
               Become a cook
             </Button>
@@ -86,19 +86,19 @@ export default function Hero({ scrollRef }: Props) {
       {stats?.TopCook && (
         <div className="relative h-[420px] max-md:hidden">
           {/* Main Card */}
-          <div className="flex flex-col absolute right-0 top-0 w-80 bg-white rounded-2xl shadow-xl p-5 border z-30">
+          <div className="flex flex-col absolute right-0 top-0 w-80 bg-card rounded-2xl shadow-xl p-5 border z-30">
             <div className="w-14 h-14 bg-orange-100 rounded-xl flex items-center justify-center text-2xl mb-3">
               👩‍🍳
             </div>
 
-            <div className="font-semibold text-gray-900">
+            <div className="font-semibold">
               {stats?.TopCook?.kitchenName}
             </div>
-            <div className="text-xs text-gray-500">
+            <div className="text-xs">
               {stats?.TopCook?.user.name} · {stats?.TopCook?.user.city}
             </div>
 
-            <div className="mt-3 w-fit inline-flex items-center gap-1 text-black bg-gray-100 px-3 py-1 rounded-full text-xs font-semibold">
+            <div className="mt-3 w-fit inline-flex items-center gap-1 bg-foreground/10 px-3 py-1 rounded-full text-xs font-semibold">
               <span className="text-yellow-500">★</span>{" "}
               {stats?.TopCook?.average} · {stats?.TopCook?.totalReviews} Reviews
             </div>
@@ -106,7 +106,7 @@ export default function Hero({ scrollRef }: Props) {
             <div className="mt-4 space-y-2 text-sm">
               {stats?.TopCook?.plans?.map((plan) => (
                 <div key={plan.type} className="flex justify-between">
-                  <span className="text-black">
+                  <span>
                     {plan?.type[0].toUpperCase() + plan?.type.slice(1)}
                   </span>
                   <span className="text-orange-500 font-semibold">

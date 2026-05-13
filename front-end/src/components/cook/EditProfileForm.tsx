@@ -15,13 +15,21 @@ import SelectInput from "../shared/SelectInput";
 import { minutesToTime } from "@/utils/minutesToTime";
 import dynamic from "next/dynamic";
 import { useCategories } from "@/hooks/shared/useCategory";
-const LeafletMaps = dynamic(() => import("./LeafletMaps"), {
-  ssr: false,
-});
 import { Button } from "../ui/button";
 import { getMyLocation } from "@/utils/getMyLocation";
 import { toast } from "sonner";
 import { Spinner } from "../ui/spinner";
+import { UpdateCookProfileSchemaType } from "@/types/cook/types";
+
+const LeafletMaps = dynamic(() => import("./LeafletMaps"), {
+  ssr: false,
+
+  loading: () => (
+    <div className="h-40 animate-pulse rounded-xl border bg-muted flex items-center justify-center">
+      Loading map...
+    </div>
+  ),
+});
 
 type Props = {
   profile: CookProfile | undefined;
@@ -73,7 +81,7 @@ export default function EditProfileForm({ profile, onClose }: Props) {
     name: "location",
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: UpdateCookProfileSchemaType) => {
     const filtered = Object.fromEntries(
       Object.entries(data).filter(([key]) =>
         Object.keys(dirtyFields).includes(key),

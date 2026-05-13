@@ -1,19 +1,18 @@
 "use client";
 
 import CookApplicationRow from "@/components/admin/CookApplicationRow";
-import { MenuManager } from "@/components/cook/Menu";
-import { MenuItemModal } from "@/components/modal/MenuItemModal";
 import ErrorState from "@/components/shared/ErrorState";
-import FilterChips, { Chip } from "@/components/shared/FilterChips";
+import FilterChips from "@/components/shared/FilterChips";
 import Header from "@/components/shared/Header";
 import NoInternet from "@/components/shared/NoInternet";
+import Pagination from "@/components/shared/Pagination";
 import SearchInput from "@/components/shared/SearchInput";
 import Table from "@/components/shared/Table";
 import { Spinner } from "@/components/ui/spinner";
 import { useApproveCook, useCook, useRejectCook } from "@/hooks/admin/useCook";
 import { getChips } from "@/utils/getFilterShips";
 import { useNetworkStatus } from "@/utils/useNetworkStatus";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function Approvals() {
   const [activeFilter, setActiveFilter] = useState("All");
@@ -34,10 +33,6 @@ export default function Approvals() {
   const cooks = data?.cooks ?? [];
   const chips = getChips(data?.stats, data?.totalCooks).reverse();
 
-  useEffect(() => {
-    setPage(1);
-  }, [activeFilter, search]);
-
   if (!isOnline) {
     return <NoInternet />;
   }
@@ -54,7 +49,10 @@ export default function Approvals() {
 
   return (
     <div className="flex-1 flex flex-col px-2 space-y-6">
-      <Header title="Approvals" description={`${data?.totalCooks || 0} total applications`} />
+      <Header
+        title="Approvals"
+        description={`${data?.totalCooks || 0} total applications`}
+      />
 
       {isLoading ? (
         <div className="h-full flex items-center justify-center">
@@ -66,12 +64,18 @@ export default function Approvals() {
             <FilterChips
               chips={chips}
               active={activeFilter}
-              onChange={setActiveFilter}
+              onChange={(value) => {
+                setActiveFilter(value);
+                setPage(1);
+              }}
             />
 
             <SearchInput
               value={search}
-              onChange={setSearch}
+              onChange={(value) => {
+                setSearch(value);
+                setPage(1);
+              }}
               placeholder="Search cooks..."
               className="w-70 max-md:w-full"
             />
@@ -93,6 +97,11 @@ export default function Approvals() {
           />
         </>
       )}
+      <Pagination
+        page={data?.page ?? 1}
+        totalPages={data?.totalPages ?? 1}
+        onPageChange={setPage}
+      />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { UtensilsCrossed, ShieldCheck, House, ChefHat } from "lucide-react";
+import { UtensilsCrossed, ShieldCheck, ChefHat } from "lucide-react";
 import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card";
 
 export default function AboutUs() {

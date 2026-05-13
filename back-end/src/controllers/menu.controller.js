@@ -41,7 +41,12 @@ export const createMenu = asyncHandler(async (req, res) => {
 });
 
 export const getTodayMenu = asyncHandler(async (req, res) => {
+  const { page = 1, limit = 5 } = req.query;
   const userId = req.user.id;
+
+  const pageNum = Math.max(parseInt(page), 1);
+  const limitNum = Math.min(Math.max(parseInt(limit), 1), 50);
+  const skip = (pageNum - 1) * limitNum;
 
   const cook = await Cook.findOne({ user: userId }).select("_id");
 
@@ -53,12 +58,21 @@ export const getTodayMenu = asyncHandler(async (req, res) => {
     cook: cook._id,
     availableToday: true,
     status: "Active",
-  }).lean();
+  })
+    .skip(skip)
+    .limit(limitNum)
+    .lean();
+
+  const total = await Menu.countDocuments({
+    cook: cook._id,
+    availableToday: true,
+    status: "Active",
+  });
 
   res.status(200).json({
     success: true,
     message: "Today Menu fetched successfully",
-    data: menu,
+    data: { menu, totalPages: Math.ceil(total / limitNum), page: pageNum },
   });
 });
 

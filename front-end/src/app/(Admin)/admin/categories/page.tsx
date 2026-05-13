@@ -2,12 +2,11 @@
 
 import CategoriesRow from "@/components/admin/CategoriesRow";
 import ErrorState from "@/components/shared/ErrorState";
-import FilterChips, { Chip } from "@/components/shared/FilterChips";
+import FilterChips from "@/components/shared/FilterChips";
 import Header from "@/components/shared/Header";
 import NoInternet from "@/components/shared/NoInternet";
 import SearchInput from "@/components/shared/SearchInput";
 import Table from "@/components/shared/Table";
-import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import {
   useCategories,
@@ -17,20 +16,19 @@ import {
 } from "@/hooks/admin/useCategories";
 import { getChips } from "@/utils/getFilterShips";
 import { useNetworkStatus } from "@/utils/useNetworkStatus";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import CategoryForm from "@/components/admin/CategoryForm";
 import { SharedButton } from "@/components/shared/SharedButton";
+import Pagination from "@/components/shared/Pagination";
 
 export default function Categories() {
   const [activeFilter, setActiveFilter] = useState("All");
@@ -54,10 +52,6 @@ export default function Categories() {
   const categories = data?.categories ?? [];
   const chips = getChips(data?.stats, data?.totalCategories).reverse();
 
-  useEffect(() => {
-    setPage(1);
-  }, [activeFilter, search]);
-
   if (!isOnline) {
     return <NoInternet />;
   }
@@ -77,34 +71,37 @@ export default function Categories() {
       <Header
         title="Cuisine categories"
         description={`${data?.totalCategories || 0} registered Categories`}
-        children={
-          <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild>
-              <SharedButton className="w-fit"
-                onClick={() => {
-                  setSelectedCategory(null);
-                  setOpen(true);
-                }}
-              >
-                + Add Category
-              </SharedButton>
-            </SheetTrigger>
-            <SheetContent className="p-5">
-              <SheetHeader className="p-0! mb-3">
-                <SheetTitle>
-                  {selectedCategory ? "Edit Category" : "Add Category"}
-                </SheetTitle>
-                <SheetDescription className="text-xs">
-                  {selectedCategory
-                    ? "Fill the details to edit"
-                    : "Fill the details to add"}
-                </SheetDescription>
-              </SheetHeader>
-              <CategoryForm category={selectedCategory} closeSheet={()=>setOpen(false)}/>
-            </SheetContent>
-          </Sheet>
-        }
-      />
+      >
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger asChild>
+            <SharedButton
+              className="w-fit"
+              onClick={() => {
+                setSelectedCategory(null);
+                setOpen(true);
+              }}
+            >
+              + Add Category
+            </SharedButton>
+          </SheetTrigger>
+          <SheetContent className="p-5">
+            <SheetHeader className="p-0! mb-3">
+              <SheetTitle>
+                {selectedCategory ? "Edit Category" : "Add Category"}
+              </SheetTitle>
+              <SheetDescription className="text-xs">
+                {selectedCategory
+                  ? "Fill the details to edit"
+                  : "Fill the details to add"}
+              </SheetDescription>
+            </SheetHeader>
+            <CategoryForm
+              category={selectedCategory}
+              closeSheet={() => setOpen(false)}
+            />
+          </SheetContent>
+        </Sheet>
+      </Header>
       {isLoading ? (
         <div className="h-full flex items-center justify-center">
           <Spinner />
@@ -115,19 +112,32 @@ export default function Categories() {
             <FilterChips
               chips={chips}
               active={activeFilter}
-              onChange={setActiveFilter}
+              onChange={(value) => {
+                setActiveFilter(value);
+                setPage(1);
+              }}
             />
 
             <SearchInput
               value={search}
-              onChange={setSearch}
+              onChange={(value) => {
+                setSearch(value);
+                setPage(1);
+              }}
               placeholder="Search cooks..."
               className="w-70 max-md:w-full"
             />
           </div>
 
           <Table
-            headers={["Category Id", "Name", "Description", "Status", "Created At", "Actions"]}
+            headers={[
+              "Category Id",
+              "Name",
+              "Description",
+              "Status",
+              "Created At",
+              "Actions",
+            ]}
             data={categories}
             colSpan={6}
             isFetching={isFetching}
@@ -146,6 +156,11 @@ export default function Categories() {
           />
         </>
       )}
+      <Pagination
+        page={data?.page ?? 1}
+        totalPages={data?.totalPages ?? 1}
+        onPageChange={setPage}
+      />
     </div>
   );
 }

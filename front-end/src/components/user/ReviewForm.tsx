@@ -1,9 +1,8 @@
 "use client";
 
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
-import * as yup from "yup";
+import { useForm, useWatch } from "react-hook-form";
+import { useState } from "react";
 
 import { FormField } from "@/components/shared/FormField";
 import { SharedButton } from "@/components/shared/SharedButton";
@@ -25,7 +24,7 @@ export default function ReviewForm({ subscriptionId, closeSheet }: Props) {
   const {
     handleSubmit,
     setValue,
-    watch,
+    control,
     register,
     reset,
     formState: { errors, isValid, isDirty },
@@ -38,15 +37,11 @@ export default function ReviewForm({ subscriptionId, closeSheet }: Props) {
     },
   });
 
-  const rating = watch("rating");
+  const rating = useWatch({
+    control: control,
+    name: "rating"
+  });
 
-  /* ---------------- RESET ---------------- */
-  useEffect(() => {
-    reset({
-      rating: undefined,
-      comment: "",
-    });
-  }, [reset]);
 
   /* ---------------- SUBMIT ---------------- */
   const onSubmit = (data: ReviewFormType) => {

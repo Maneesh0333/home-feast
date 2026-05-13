@@ -1,10 +1,13 @@
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import type {
+  UseFormRegisterReturn,
+} from "react-hook-form";
 
 type FormFieldProps = {
   id: string;
   label: string;
-  register: any;
+  register: UseFormRegisterReturn;
   error?: string;
   type?: string;
   placeholder?: string;

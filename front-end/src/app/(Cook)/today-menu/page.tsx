@@ -4,39 +4,20 @@ import Header from "@/components/shared/Header";
 import { Spinner } from "@/components/ui/spinner";
 import ErrorState from "@/components/shared/ErrorState";
 
-import {
-  MenuItem,
-  useDisableMenus,
-  useEnableMenus,
-  useMenu,
-  useToggleTodayMenu,
-} from "@/hooks/cook/useMenu";
 import NoInternet from "@/components/shared/NoInternet";
-import { useEffect, useState } from "react";
-import { getChips } from "@/utils/getFilterShips";
+
 import { useNetworkStatus } from "@/utils/useNetworkStatus";
-import Table from "@/components/shared/Table";
-import SearchInput from "@/components/shared/SearchInput";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { SharedButton } from "@/components/shared/SharedButton";
-import MenuRow from "@/components/cook/MenuRow";
-import MenuForm from "@/components/cook/MenuForm";
-import FilterChips from "@/components/shared/FilterChips";
 import { MenuManager } from "@/components/cook/Menu";
 import { useTodayMenu } from "@/hooks/cook/useTodayMenu";
+import Pagination from "@/components/shared/Pagination";
+import { useState } from "react";
 
 export default function TodayMenu() {
+  const [page, setPage] = useState(1);
   const isOnline = useNetworkStatus();
-  const { data, isLoading, isError, isFetching, refetch } = useTodayMenu();
+  const { data, isLoading, isError, isFetching, refetch } = useTodayMenu(page);
 
-  const menu = data || [];
+  const menu = data?.menu || [];
   if (!isOnline) {
     return <NoInternet />;
   }
@@ -60,12 +41,14 @@ export default function TodayMenu() {
         </div>
       ) : (
         <>
-          <MenuManager
-            menu={menu}
-          />
+          <MenuManager menu={menu} />
         </>
       )}
+      <Pagination
+        page={data?.page ?? 1}
+        totalPages={data?.totalPages ?? 1}
+        onPageChange={setPage}
+      />
     </div>
   );
 }
-

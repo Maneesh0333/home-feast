@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
 /* 🔹 TYPES */
+
 type EarningsStats = {
   monthlyEarnings: number;
   weeklyRevenue: number;
@@ -21,24 +22,37 @@ export type EarningsHistory = {
 
 type CookEarningsData = {
   stats: EarningsStats;
+
   history: EarningsHistory[];
+
+  total: number;
+
+  page: number;
+
+  totalPages: number;
 };
 
 type CookEarningsResponse = ResponseType & {
   data: CookEarningsData;
 };
 
-export const useCookEarnings = () => {
+
+export const useCookEarnings = (page: number = 1, limit: number = 5) => {
   return useQuery<CookEarningsData, AxiosError<ResponseType>>({
-    queryKey: ["cook-earnings"],
+    queryKey: ["cook-earnings", page, limit],
 
     queryFn: async () => {
-      const res = await axiosApi.get<CookEarningsResponse>("cooks/earning");
+      const res = await axiosApi.get<CookEarningsResponse>(
+        `cooks/earning?page=${page}&limit=${limit}`,
+      );
+
       return res.data.data;
     },
 
     refetchOnWindowFocus: false,
+
     placeholderData: (prev) => prev,
-    staleTime: 1000 * 60 * 5, // cache for 5 mins (good for earnings)
+
+    staleTime: 1000 * 60 * 5,
   });
 };

@@ -20,8 +20,8 @@ export function RoleCard({
       onClick={() => onSelect(value)}
       className={`flex flex-col items-center gap-1 cursor-pointer border transition-all ${
         selected
-          ? "bg-orange-50 border-orange-500 text-orange-700 shadow-sm"
-          : "bg-white border-gray-200 text-gray-500 hover:border-orange-200"
+          ? "bg-card border-orange-500 text-orange-700 shadow-sm"
+          : "bg-background border hover:border-gray-100/30"
       }`}
     >
       <CardTitle>🛍️</CardTitle>

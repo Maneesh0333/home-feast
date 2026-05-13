@@ -8,7 +8,6 @@ import {
   User,
   Settings,
   Star,
-  LogOut,
   LayoutGrid,
   ChefHat,
   Users,
@@ -54,7 +53,7 @@ const navItems = {
       ],
     },
     {
-      title: "finance",
+      title: "Finance",
       items: [
         { title: "Earnings", icon: <Wallet size={18} />, href: "/earnings" },
         {
@@ -65,7 +64,7 @@ const navItems = {
       ],
     },
     {
-      title: "account",
+      title: "Account",
       items: [
         { title: "Profile", icon: <User size={18} />, href: "/profile" },
         { title: "Settings", icon: <Settings size={18} />, href: "/settings" },

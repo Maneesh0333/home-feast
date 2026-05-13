@@ -12,23 +12,45 @@ import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const user = useAuthStore((state) => state.user);
+
   const [mobileOpen, setMobileOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const router = useRouter();
+
+  const [loginOpen, setLoginOpen] = useState(false);
+  const [signupOpen, setSignupOpen] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const logoutMutation = useLogout();
 
   const handleLogout = () => {
+    setProfileOpen(false);
+    setMobileOpen(false);
     logoutMutation.mutate();
   };
 
   const handleNavItemClick = () => {
     setProfileOpen(false);
-    router.push("/user-profile");
   };
-  // 🔥 close dropdown on outside click
+
+  // 🔥 switch handlers
+  const switchToSignup = () => {
+    setLoginOpen(false);
+
+    setTimeout(() => {
+      setSignupOpen(true);
+    }, 0);
+  };
+
+  const switchToLogin = () => {
+    setSignupOpen(false);
+
+    setTimeout(() => {
+      setLoginOpen(true);
+    }, 0);
+  };
+
+  // close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -40,17 +62,19 @@ export default function Navbar() {
     };
 
     document.addEventListener("mousedown", handleClickOutside);
+
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
-    <nav className="sticky top-0 z-50 backdrop-blur-3xl border-b bg-white/80">
+    <nav className="sticky top-0 z-50 backdrop-blur-3xl border-b bg-card">
       <div className="max-w-7xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <div className="w-9 h-9 bg-orange-500 rounded-lg flex items-center justify-center text-lg">
             🍱
           </div>
+
           <div className="font-serif text-xl font-bold text-blue-900">
             Home<span className="text-orange-500">Feast</span>
           </div>
@@ -60,11 +84,6 @@ export default function Navbar() {
         {user ? (
           <div className="hidden md:flex items-center gap-3">
             <ModeToggle />
-
-            {/* Notification */}
-            <button className="w-9 h-9 border rounded-lg flex items-center justify-center hover:bg-gray-100">
-              🔔
-            </button>
 
             {/* Profile */}
             <div className="relative" ref={dropdownRef}>
@@ -76,26 +95,26 @@ export default function Navbar() {
               </button>
 
               {profileOpen && (
-                <div className="absolute right-0 top-11 w-48 bg-white border rounded-xl shadow-md p-2 flex flex-col gap-1">
+                <div className="absolute right-0 top-11 w-48 bg-card border rounded-xl shadow-md p-2 flex flex-col gap-1">
                   <Link
                     href="/user-profile"
                     onClick={() => handleNavItemClick()}
-                    className="px-3 py-2 rounded-lg hover:bg-gray-100"
+                    className="px-3 py-2 rounded-lg hover:bg-foreground/10"
                   >
                     👤 Profile
                   </Link>
 
                   <Link
-                    href="/orders"
-                    className="px-3 py-2 rounded-lg hover:bg-gray-100"
+                    href="/settings"
+                    className="px-3 py-2 rounded-lg hover:bg-foreground/10"
                   >
-                    📦 Orders
+                    ⚙️ Settings
                   </Link>
 
                   <Link
                     onClick={() => handleNavItemClick()}
                     href="/my-subscriptions"
-                    className="px-3 py-2 rounded-lg hover:bg-gray-100"
+                    className="px-3 py-2 rounded-lg hover:bg-foreground/10"
                   >
                     🍽 Subscribers
                   </Link>
@@ -103,15 +122,14 @@ export default function Navbar() {
                   <button
                     onClick={handleLogout}
                     disabled={logoutMutation.isPending}
-                    className="flex whitespace-nowrap hover:bg-gray-200 px-3 py-1 rounded-lg cursor-pointer text-left"
+                    className="flex whitespace-nowrap hover:bg-foreground/10 px-3 py-1 rounded-lg cursor-pointer text-left"
                   >
                     <span className="text-lg">🚪</span>
+
                     {logoutMutation.isPending ? (
-                      <>
-                        <span className="flex items-center justify-center w-10">
-                          <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
-                        </span>
-                      </>
+                      <span className="flex items-center justify-center w-10">
+                        <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
+                      </span>
                     ) : (
                       "Logout"
                     )}
@@ -123,11 +141,32 @@ export default function Navbar() {
         ) : (
           <div className="hidden md:flex items-center gap-2">
             <ModeToggle />
-            <LoginModal />
-            <SignupModal role="User">
+
+            {/* Login Modal */}
+            <LoginModal
+              open={loginOpen}
+              onOpenChange={setLoginOpen}
+              onSwitchToSignup={switchToSignup}
+            >
               <Button
                 size="xllite"
-                className={`px-5 font-semibold cursor-pointer rounded-lg text-white bg-orange-500 hover:bg-orange-600`}
+                variant="outline"
+                className="px-5 font-semibold rounded-lg cursor-pointer"
+              >
+                Log in
+              </Button>
+            </LoginModal>
+
+            {/* Signup Modal */}
+            <SignupModal
+              role="User"
+              open={signupOpen}
+              onOpenChange={setSignupOpen}
+              onSwitchToLogin={switchToLogin}
+            >
+              <Button
+                size="xllite"
+                className="px-5 font-semibold cursor-pointer rounded-lg text-white bg-orange-500 hover:bg-orange-600"
               >
                 Sign up free
               </Button>
@@ -138,6 +177,7 @@ export default function Navbar() {
         {/* Mobile Toggle */}
         <div className="flex gap-2 md:hidden">
           <ModeToggle />
+
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
             className="text-2xl cursor-pointer"
@@ -149,26 +189,28 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="md:hidden border-t bg-white px-2 py-4 space-y-3">
+        <div className="md:hidden relative">
           {user ? (
-            <>
+            <div className="absolute top-0 left-0 border-y bg-card py-4 px-2 flex flex-col gap-2 w-full">
               <Link
                 href="/user-profile"
-                onClick={() => handleNavItemClick()}
-                className="flex whitespace-nowrap w-full hover:bg-gray-200 px-3 py-1 rounded-lg cursor-pointer text-left"
+                onClick={() => setMobileOpen(false)}
+                className="flex whitespace-nowrap w-full hover:bg-foreground/10 px-3 py-1 rounded-lg cursor-pointer text-left"
               >
                 👤 Profile
               </Link>
+
               <Link
-                href="/orders"
-                className="flex whitespace-nowrap w-full hover:bg-gray-200 px-3 py-1 rounded-lg cursor-pointer text-left"
+                href="/settings"
+                className="flex whitespace-nowrap w-full hover:bg-foreground/10 px-3 py-1 rounded-lg cursor-pointer text-left"
               >
-                📦 Orders
+                ⚙️ Settings
               </Link>
+
               <Link
                 href="/my-subscriptions"
-                onClick={() => handleNavItemClick()}
-                className="flex whitespace-nowrap w-full hover:bg-gray-200 px-3 py-1 rounded-lg cursor-pointer text-left"
+                onClick={() => setMobileOpen(false)}
+                className="flex whitespace-nowrap w-full hover:bg-foreground/10 px-3 py-1 rounded-lg cursor-pointer text-left"
               >
                 🍽 Subscribers
               </Link>
@@ -176,27 +218,35 @@ export default function Navbar() {
               <button
                 onClick={handleLogout}
                 disabled={logoutMutation.isPending}
-                className="flex whitespace-nowrap w-full hover:bg-gray-200 px-3 py-1 rounded-lg cursor-pointer text-left"
+                className="flex whitespace-nowrap w-full hover:bg-foreground/10 px-3 py-1 rounded-lg cursor-pointer text-left"
               >
                 <span className="text-lg">🚪</span>
+
                 {logoutMutation.isPending ? (
-                  <>
-                    <span className="flex items-center justify-center w-10">
-                      <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
-                    </span>
-                  </>
+                  <span className="flex items-center justify-center w-10">
+                    <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
+                  </span>
                 ) : (
                   "Logout"
                 )}
               </button>
-            </>
+            </div>
           ) : (
-            <div className="space-y-2">
-              <LoginModal className="w-full!" />
+            <div className="absolute top-0 left-0 space-y-2 border-y bg-card py-4 px-2 w-full">
+              <LoginModal>
+                <Button
+                  size="xllite"
+                  variant="outline"
+                  className="px-5 font-semibold rounded-lg cursor-pointer w-full"
+                >
+                  Log in
+                </Button>
+              </LoginModal>
+
               <SignupModal role="User">
                 <Button
                   size="xllite"
-                  className={`px-5 font-semibold cursor-pointer rounded-lg text-white bg-orange-500 hover:bg-orange-600 w-full`}
+                  className="px-5 font-semibold cursor-pointer rounded-lg text-white bg-orange-500 hover:bg-orange-600 w-full"
                 >
                   Sign up free
                 </Button>

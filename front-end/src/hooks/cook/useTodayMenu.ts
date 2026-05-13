@@ -15,16 +15,18 @@ export type TodayMenuItem = {
 
 /* ---------------- API RESPONSE ---------------- */
 type ApiResponse = ResponseType & {
-  data: TodayMenuItem[];
+  data: { menu: TodayMenuItem[]; totalPages: number; page: number };
 };
 
 /* ---------------- HOOK ---------------- */
-export const useTodayMenu = () => {
-  return useQuery<TodayMenuItem[], AxiosError<ResponseType>>({
-    queryKey: ["today-menu"],
+export const useTodayMenu = (page: number, limit: number = 5) => {
+  return useQuery<ApiResponse["data"], AxiosError<ResponseType>>({
+    queryKey: ["today-menu", page, limit],
 
     queryFn: async () => {
-      const res = await axiosApi.get<ApiResponse>("/menus/today");
+      const res = await axiosApi.get<ApiResponse>("/menus/today", {
+        params: { page, limit },
+      });
       return res.data.data;
     },
 

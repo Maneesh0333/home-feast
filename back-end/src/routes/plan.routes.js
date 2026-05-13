@@ -7,6 +7,9 @@ import {
 } from "../controllers/plan.controller.js";
 import { enablePlan } from "../controllers/plan.controller.js";
 import { disablePlan } from "../controllers/plan.controller.js";
+import { validateObjectId } from "../middleware/validateObjectId.middleware.js";
+import { validate } from "../middleware/validate.middleware.js";
+import { createPlanSchema, updatePlanSchema } from "../validations/plan.schema.js";
 
 const router = express.Router();
 
@@ -14,9 +17,9 @@ const router = express.Router();
 router.use(isAuthenticated);
 router.use(restrictTo("Cook"));
 
-router.post("/", createPlan);            // create plan
-router.get("/", getMyPlans);             // get all plans of cook
-router.patch("/:id", updatePlan);        // update price
-router.patch("/:id/enable", enablePlan);
-router.patch("/:id/disable", disablePlan);
+router.post("/", validate(createPlanSchema), createPlan);            
+router.get("/", getMyPlans);             
+router.patch("/:id", validate(updatePlanSchema),validateObjectId, updatePlan);        
+router.patch("/:id/enable", validateObjectId, enablePlan);
+router.patch("/:id/disable", validateObjectId, disablePlan);
 export default router;

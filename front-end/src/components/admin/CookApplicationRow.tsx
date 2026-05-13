@@ -1,12 +1,10 @@
-import type { UseMutationResult } from "@tanstack/react-query";
 import { ActionButton } from "../shared/ActionButton";
-import { Cook } from "@/hooks/admin/useCook";
-
+import { Cook, useApproveCook, useRejectCook } from "@/hooks/admin/useCook";
 
 type Props = {
   item: Cook;
-  approveMutation: UseMutationResult<any, Error, string>;
-  rejectMutation: UseMutationResult<any, Error, string>;
+  approveMutation: ReturnType<typeof useApproveCook>;
+  rejectMutation: ReturnType<typeof useRejectCook>;
 };
 
 export default function CookApplicationRow({

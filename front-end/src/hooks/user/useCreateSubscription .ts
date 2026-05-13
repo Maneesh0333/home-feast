@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import axiosApi from "@/lib/axios";
 import type { AxiosError } from "axios";
 import { toast } from "sonner";
@@ -11,8 +11,7 @@ type CreateSubscriptionPayload = subscriptionSchemaType & {
 };
 
 export const useCreateSubscription = () => {
-  const qc = useQueryClient();
-
+  
   return useMutation<
     ResponseType,
     AxiosError<ResponseType>,

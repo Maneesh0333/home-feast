@@ -1,7 +1,7 @@
 type AuthFooterProps = {
   text: string;
-  actionText: string;
-  onClick?: () => void;
+  actionText: "Log in" | "Sign up";
+  onClick: () => void;
 };
 
 export function AuthFooter({
@@ -12,12 +12,12 @@ export function AuthFooter({
   return (
     <div className="text-center text-sm text-gray-500">
       {text}{" "}
-      <span
+      <button
         onClick={onClick}
         className="text-orange-500 font-semibold cursor-pointer hover:underline"
       >
         {actionText}
-      </span>
+      </button>
     </div>
   );
 }

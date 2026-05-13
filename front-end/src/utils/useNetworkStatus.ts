@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 
 export const useNetworkStatus = () => {
-  const [isOnline, setIsOnline] = useState(true); // default safe
+  const [isOnline, setIsOnline] = useState(() => {
+    // SSR safety
+    if (typeof window === "undefined") return true;
+
+    return navigator.onLine;
+  });
 
   useEffect(() => {
-    // set correct initial value on client
-    setIsOnline(navigator.onLine);
-
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
 

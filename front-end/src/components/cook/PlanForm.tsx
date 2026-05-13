@@ -2,7 +2,6 @@
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
-import { useEffect } from "react";
 
 import { SharedButton } from "@/components/shared/SharedButton";
 import { FormField } from "@/components/shared/FormField";
@@ -32,33 +31,15 @@ export default function PlanForm({ plan, closeSheet }: Props) {
     control,
     register,
     reset,
-    watch,
     formState: { isValid, isDirty, errors, dirtyFields },
   } = useForm<FormType>({
     resolver: yupResolver(plan ? updatePlanSchema : createPlanSchema),
     mode: "onChange",
-    defaultValues: {
-      type: "daily",
-      price: 0,
+    values: {
+      type: plan?.type || "daily",
+      price: plan?.price || 0,
     },
   });
-
-  watch("type");
-  watch("price");
-
-  useEffect(() => {
-    if (plan) {
-      reset({
-        type: plan.type,
-        price: plan.price,
-      });
-    } else {
-      reset({
-        type: "daily",
-        price: 0,
-      });
-    }
-  }, [plan, reset]);
 
   const onSubmit = (data: FormType) => {
     if (plan) {

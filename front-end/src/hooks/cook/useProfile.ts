@@ -4,6 +4,7 @@ import type { AxiosError } from "axios";
 
 import { ResponseType } from "@/types/Shared/types";
 import { toast } from "sonner";
+import { UpdateMenuSchemaType } from "@/types/cook/types";
 
 export type CookProfile = {
   _id: string;
@@ -60,7 +61,7 @@ export const useProfile = () => {
 export const useUpdateProfile = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<ResponseType, AxiosError<ResponseType>, any>({
+  return useMutation<ResponseType, AxiosError<ResponseType>, Partial<UpdateMenuSchemaType>>({
     mutationFn: async (data) => {
       const res = await axiosApi.patch<ResponseType>("/cooks/profile", data);
       return res.data;

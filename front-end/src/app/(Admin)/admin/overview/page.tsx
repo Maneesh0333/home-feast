@@ -3,13 +3,30 @@
 import Header from "@/components/shared/Header";
 import StatsGrid from "@/components/shared/StatsGrid";
 import QuickActions from "@/components/shared/QuickActions";
-import { ChartBar } from "@/components/shared/BarChart";
 import { useAdminOverview } from "@/hooks/admin/useAdminOverview";
 import { Spinner } from "@/components/ui/spinner";
 import ErrorState from "@/components/shared/ErrorState";
 import NoInternet from "@/components/shared/NoInternet";
 import { useNetworkStatus } from "@/utils/useNetworkStatus";
 import { QuickAction } from "@/app/types/(Cook)/overview";
+import dynamic from "next/dynamic";
+
+const ChartBar = dynamic(
+  () => import("@/components/shared/BarChart"),
+  {
+    ssr: false,
+
+    loading: () => (
+      <div className="h-[400px] rounded-xl border bg-muted animate-pulse flex items-center justify-center">
+        <p className="text-sm text-muted-foreground">
+          Loading chart...
+        </p>
+      </div>
+    ),
+  },
+);
+
+
 
 const adminActions: QuickAction[] = [
   {

@@ -1,6 +1,5 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
 import {
@@ -24,7 +23,7 @@ type Props = {
   }[];
 };
 
-export function ChartBar({ data = [] }: Props) {
+export default function ChartBar({ data = [] }: Props) {
   const chartData = data.map((item) => ({
     label: item.date,
     earnings: item.amount,

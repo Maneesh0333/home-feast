@@ -1,6 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
 
 import { FormField } from "../shared/FormField";
 import { SharedButton } from "../shared/SharedButton";
@@ -19,26 +18,18 @@ export default function UserProfileForm({ profile, closeSheet }: Props) {
   const {
     handleSubmit,
     register,
-    watch,
     reset,
     formState: { errors, isValid, isDirty, dirtyFields },
   } = useForm<UserProfileFormValues>({
     resolver: yupResolver(userProfileSchema),
     mode: "onChange",
+    values: {
+      name: profile?.name || "",
+      email: profile?.email || "",
+      phone: profile?.phone || "",
+      city: profile?.city || "",
+    },
   });
-
-  watch();
-
-  useEffect(() => {
-    if (profile) {
-      reset({
-        name: profile.name,
-        email: profile.email,
-        phone: profile.phone,
-        city: profile.city ?? "",
-      });
-    }
-  }, [profile, reset]);
 
   const onSubmit = (data: UserProfileFormValues) => {
     const updatedData = Object.fromEntries(

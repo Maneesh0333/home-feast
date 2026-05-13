@@ -1,9 +1,7 @@
 import { StatsData } from "@/app/types/(Cook)/overview";
 import {
   Card,
-  CardAction,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,

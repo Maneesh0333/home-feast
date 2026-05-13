@@ -11,7 +11,6 @@ import {
 
 import { FormField } from "../shared/FormField";
 import { AuthButton } from "./AuthButton";
-import { AuthFooter } from "../auth/AuthFooter";
 import { LoginFormType } from "@/types/auth/types";
 import { loginSchema } from "@/schemas/auth/auth.schema";
 import { useLogin } from "@/hooks/Auth/useLogin";
@@ -72,8 +71,6 @@ export function LoginForm() {
         <AuthButton loading={isPending} disabled={!isValid}>
           Log in
         </AuthButton>
-
-        <AuthFooter text="Don’t have an account?" actionText="Sign up" />
       </form>
     </>
   );

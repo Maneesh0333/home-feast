@@ -1,11 +1,10 @@
-import { Plan } from "@/hooks/cook/usePlan";
-import type { UseMutationResult } from "@tanstack/react-query";
+import { Plan, useDisablePlan, useEnablePlan } from "@/hooks/cook/usePlan";
 import { ActionButton } from "../shared/ActionButton";
 
 type Props = {
   plan: Plan;
-  enableMutation: UseMutationResult<any, Error, string>;
-  disableMutation: UseMutationResult<any, Error, string>;
+  enableMutation: ReturnType<typeof useEnablePlan>;
+  disableMutation: ReturnType<typeof useDisablePlan>;
   onEdit: (plan: Plan) => void;
 };
 

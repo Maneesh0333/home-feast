@@ -21,7 +21,7 @@ export function useVerifyOtp() {
       toast.success(data.message ?? "Verification success");
     },
 
-    onError: (error: any) => {
+    onError: (error) => {
       if (!error?.response) {
         toast.error("Network error, please try again later.");
         return;

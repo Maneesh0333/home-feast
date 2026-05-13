@@ -58,8 +58,8 @@ export default function PlanPage() {
       <Header
         title="Subscription Plans"
         description={`${plans.length} plans created`}
-        children={
-          <SharedButton
+      >
+        <SharedButton
             className="w-fit"
             onClick={() => {
               setSelectedPlan(null);
@@ -68,8 +68,7 @@ export default function PlanPage() {
           >
             + Add Plan
           </SharedButton>
-        }
-      />
+      </Header>
 
       {/* 🟡 LOADING */}
       {isLoading ? (

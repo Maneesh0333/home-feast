@@ -5,6 +5,7 @@ import ErrorState from "@/components/shared/ErrorState";
 import FilterChips from "@/components/shared/FilterChips";
 import Header from "@/components/shared/Header";
 import NoInternet from "@/components/shared/NoInternet";
+import Pagination from "@/components/shared/Pagination";
 import SearchInput from "@/components/shared/SearchInput";
 import { Spinner } from "@/components/ui/spinner";
 import {
@@ -15,15 +16,18 @@ import {
 } from "@/hooks/cook/useCookRequests";
 import { getChips } from "@/utils/getFilterShips";
 import { useNetworkStatus } from "@/utils/useNetworkStatus";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function Orders() {
   const [filter, setFilter] = useState("All");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
-  const { data, isError, refetch, isFetching, isLoading } =
-    useCookRequests(filter, search, page);
+  const { data, isError, refetch, isFetching, isLoading } = useCookRequests(
+    filter,
+    search,
+    page,
+  );
 
   const [active, setActive] = useState<{
     id: string;
@@ -38,10 +42,6 @@ export default function Orders() {
 
   const requests = data?.requests ?? [];
   const chips = getChips(data?.stats, data?.totalRequests).reverse();
-
-  useEffect(() => {
-    setPage(1);
-  }, [filter, search]);
 
   if (!isOnline) return <NoInternet />;
 
@@ -69,11 +69,21 @@ export default function Orders() {
       ) : (
         <>
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <FilterChips chips={chips} active={filter} onChange={setFilter} />
+            <FilterChips
+              chips={chips}
+              active={filter}
+              onChange={(value) => {
+                setFilter(value);
+                setPage(1);
+              }}
+            />
 
             <SearchInput
               value={search}
-              onChange={setSearch}
+              onChange={(value) => {
+                setSearch(value);
+                setPage(1);
+              }}
               placeholder="Search requests..."
               className="w-70 max-md:w-full"
             />
@@ -109,6 +119,12 @@ export default function Orders() {
           </div>
         </>
       )}
+
+      <Pagination
+        page={data?.page ?? 1}
+        totalPages={data?.totalPages ?? 1}
+        onPageChange={setPage}
+      />
     </div>
   );
 }

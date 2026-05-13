@@ -187,7 +187,7 @@ export default function ProfileClient({ id }: { id: string }) {
 
           {/* MENU */}
           <div className="mt-10">
-            <h3 className="font-semibold text-2xl mb-4">Today's menu</h3>
+            <h3 className="font-semibold text-2xl mb-4">{"Today's menu"}</h3>
 
             {menu && menu?.length > 0 ? (
               <div className="grid grid-cols-2 max-md:grid-cols-1 gap-3">
@@ -216,7 +216,7 @@ export default function ProfileClient({ id }: { id: string }) {
               </div>
             ) : (
               <div className="flex h-50 w-full border rounded-2xl text-sm items-center justify-center">
-                No today's menu yet
+                {"No today's menu yet"}
               </div>
             )}
           </div>

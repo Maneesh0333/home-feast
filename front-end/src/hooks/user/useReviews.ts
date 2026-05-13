@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosApi from "../../lib/axios";
 import type { AxiosError } from "axios";
-import { useInfiniteQuery } from "@tanstack/react-query";
 import { ResponseType } from "@/types/Shared/types";
 import { toast } from "sonner";
 

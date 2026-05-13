@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import {
@@ -43,7 +43,7 @@ export function SubscriptionModal({ cook, selectedPlan, plans }: Props) {
     register,
     handleSubmit,
     setValue,
-    watch,
+    control,
     formState: { errors, isValid },
   } = useForm<subscriptionSchemaType>({
     resolver: yupResolver(subscriptionSchema),
@@ -52,6 +52,16 @@ export function SubscriptionModal({ cook, selectedPlan, plans }: Props) {
       mealTime: "lunch",
       startDate: new Date(),
     },
+  });
+
+  const mealTime = useWatch({
+    control: control,
+    name: "mealTime",
+  });
+
+  const startDate = useWatch({
+    control: control,
+    name: "startDate",
   });
 
   const onSubmit = (formData: subscriptionSchemaType) => {
@@ -133,7 +143,7 @@ export function SubscriptionModal({ cook, selectedPlan, plans }: Props) {
                   value: "both",
                 },
               ]}
-              value={watch("mealTime")}
+              value={mealTime}
               onChange={(val) =>
                 setValue("mealTime", val as "lunch" | "dinner" | "both")
               }
@@ -149,13 +159,13 @@ export function SubscriptionModal({ cook, selectedPlan, plans }: Props) {
 
           {/* Date */}
           <DatePickerInput
-            value={watch("startDate")}
+            value={startDate}
             onChange={(date) => setValue("startDate", date)}
             error={errors.startDate?.message}
           />
 
           {/* Info */}
-          <div className="bg-orange-100 p-3 rounded">
+          <div className="bg-orange-100 p-3 rounded text-black/80">
             Your subscription will be confirmed within 2 hours.
           </div>
 

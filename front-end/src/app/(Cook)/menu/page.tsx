@@ -12,7 +12,7 @@ import {
   useToggleTodayMenu,
 } from "@/hooks/cook/useMenu";
 import NoInternet from "@/components/shared/NoInternet";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { getChips } from "@/utils/getFilterShips";
 import { useNetworkStatus } from "@/utils/useNetworkStatus";
 import Table from "@/components/shared/Table";
@@ -29,6 +29,7 @@ import { SharedButton } from "@/components/shared/SharedButton";
 import MenuRow from "@/components/cook/MenuRow";
 import MenuForm from "@/components/cook/MenuForm";
 import FilterChips from "@/components/shared/FilterChips";
+import Pagination from "@/components/shared/Pagination";
 
 export default function Menu() {
   const [activeFilter, setActiveFilter] = useState("All");
@@ -52,10 +53,6 @@ export default function Menu() {
   const menus = data?.menu ?? [];
   const chips = getChips(data?.stats, data?.totalMenu).reverse();
 
-  useEffect(() => {
-    setPage(1);
-  }, [activeFilter, search]);
-
   if (!isOnline) {
     return <NoInternet />;
   }
@@ -75,35 +72,32 @@ export default function Menu() {
       <Header
         title="Menu management"
         description="Add, edit and manage your daily menu"
-        children={
-          <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild>
-              <SharedButton
-                className="w-fit"
-                onClick={() => {
-                  setSelectedMenu(null);
-                  setOpen(true);
-                }}
-              >
-                + Add Menu
-              </SharedButton>
-            </SheetTrigger>
-            <SheetContent className="p-5 overflow-y-auto">
-              <SheetHeader className="p-0! mb-3">
-                <SheetTitle>
-                  {selectedMenu ? "Edit Menu" : "Add Menu"}
-                </SheetTitle>
-                <SheetDescription className="text-xs">
-                  {selectedMenu
-                    ? "Fill the details to edit"
-                    : "Fill the details to add"}
-                </SheetDescription>
-              </SheetHeader>
-              <MenuForm menu={selectedMenu} closeSheet={() => setOpen(false)} />
-            </SheetContent>
-          </Sheet>
-        }
-      />
+      >
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger asChild>
+            <SharedButton
+              className="w-fit"
+              onClick={() => {
+                setSelectedMenu(null);
+                setOpen(true);
+              }}
+            >
+              + Add Menu
+            </SharedButton>
+          </SheetTrigger>
+          <SheetContent className="p-5 overflow-y-auto">
+            <SheetHeader className="p-0! mb-3">
+              <SheetTitle>{selectedMenu ? "Edit Menu" : "Add Menu"}</SheetTitle>
+              <SheetDescription className="text-xs">
+                {selectedMenu
+                  ? "Fill the details to edit"
+                  : "Fill the details to add"}
+              </SheetDescription>
+            </SheetHeader>
+            <MenuForm menu={selectedMenu} closeSheet={() => setOpen(false)} />
+          </SheetContent>
+        </Sheet>
+      </Header>
       {isLoading ? (
         <div className="h-full flex items-center justify-center">
           <Spinner />
@@ -114,12 +108,18 @@ export default function Menu() {
             <FilterChips
               chips={chips}
               active={activeFilter}
-              onChange={setActiveFilter}
+              onChange={(value) => {
+                setActiveFilter(value);
+                setPage(1);
+              }}
             />
 
             <SearchInput
               value={search}
-              onChange={setSearch}
+              onChange={(value) => {
+                setSearch(value);
+                setPage(1);
+              }}
               placeholder="Search Menu..."
               className="w-70 max-md:w-full"
             />
@@ -154,25 +154,12 @@ export default function Menu() {
           />
         </>
       )}
+
+      <Pagination
+        page={data?.page ?? 1}
+        totalPages={data?.totalPages ?? 1}
+        onPageChange={setPage}
+      />
     </div>
   );
 }
-// <div className="flex-1 flex flex-col overflow-y-auto px-6 pb-6 space-y-6">
-//   <Header
-//     title="Menu management"
-//     description="Toggle items on/off for today's service"
-//     children={<MenuItemModal />}
-//   />
-
-//   <MenuManager
-//     title="All menu items"
-//     menu={menu}
-//     onToggle={(id) => toggleMutation.mutate(id)}
-//   />
-
-//   <MenuManager
-//     title="Today's availability"
-//     menu={todayMenu}
-//     onToggle={(id) => toggleMutation.mutate(id)}
-//   />
-// </div>

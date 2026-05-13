@@ -1,21 +1,18 @@
 "use client";
 
-import CookApplicationRow from "@/components/admin/CookApplicationRow";
 import CookRow from "@/components/admin/CookRow";
-import { MenuManager } from "@/components/cook/Menu";
-import { MenuItemModal } from "@/components/modal/MenuItemModal";
 import ErrorState from "@/components/shared/ErrorState";
-import FilterChips, { Chip } from "@/components/shared/FilterChips";
+import FilterChips from "@/components/shared/FilterChips";
 import Header from "@/components/shared/Header";
 import NoInternet from "@/components/shared/NoInternet";
+import Pagination from "@/components/shared/Pagination";
 import SearchInput from "@/components/shared/SearchInput";
 import Table from "@/components/shared/Table";
 import { Spinner } from "@/components/ui/spinner";
-import { useApproveCook, useBlockCook, useCook, useRejectCook, useUnblockCook } from "@/hooks/admin/useCook";
-import { useBlockUsers, useUnblockUsers } from "@/hooks/admin/useUsers";
+import { useBlockCook, useCook, useUnblockCook } from "@/hooks/admin/useCook";
 import { getChips } from "@/utils/getFilterShips";
 import { useNetworkStatus } from "@/utils/useNetworkStatus";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function Cooks() {
   const [activeFilter, setActiveFilter] = useState("All");
@@ -35,10 +32,6 @@ export default function Cooks() {
 
   const cooks = data?.cooks ?? [];
   const chips = getChips(data?.stats, data?.totalCooks).reverse();
-
-  useEffect(() => {
-    setPage(1);
-  }, [activeFilter, search]);
 
   if (!isOnline) {
     return <NoInternet />;
@@ -71,12 +64,18 @@ export default function Cooks() {
             <FilterChips
               chips={chips}
               active={activeFilter}
-              onChange={setActiveFilter}
+              onChange={(value) => {
+                setActiveFilter(value);
+                setPage(1);
+              }}
             />
 
             <SearchInput
               value={search}
-              onChange={setSearch}
+              onChange={(value) => {
+                setSearch(value);
+                setPage(1);
+              }}
               placeholder="Search cooks..."
               className="w-70 max-md:w-full"
             />
@@ -98,6 +97,11 @@ export default function Cooks() {
           />
         </>
       )}
+      <Pagination
+        page={data?.page ?? 1}
+        totalPages={data?.totalPages ?? 1}
+        onPageChange={setPage}
+      />
     </div>
   );
 }

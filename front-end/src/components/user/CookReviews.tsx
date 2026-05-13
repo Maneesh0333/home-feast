@@ -1,9 +1,7 @@
-import React from "react";
 import ErrorState from "../shared/ErrorState";
 import NoInternet from "../shared/NoInternet";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { useAuthStore } from "@/stores/authStore";
 import { useNetworkStatus } from "@/utils/useNetworkStatus";
 import { useInfiniteReviews } from "@/hooks/cook/useReviews";
 import Header from "../shared/Header";

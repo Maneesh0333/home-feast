@@ -28,7 +28,7 @@ export default function Footer() {
 
           {/* Artisans */}
           <FooterColumn
-            title="Artisans"
+            title="Cooks"
             links={[
               { label: "Join as Cook", link: "/auth" },
               { label: "Success Stories", link: "" },
