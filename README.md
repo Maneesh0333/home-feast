@@ -217,3 +217,7 @@ npm run dev
 - Reduced dependency on restaurant food
 - Digitized tiffin service ecosystem
 
+# 🎥 Demo
+https://github.com/user-attachments/assets/b0191bc1-d660-461f-af68-791d6c427588
+
+
