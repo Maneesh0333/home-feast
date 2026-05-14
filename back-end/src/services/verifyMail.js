@@ -4,6 +4,7 @@ import handlebars from "handlebars";
 import { fileURLToPath } from "url";
 import path from "path";
 import fs from "fs";
+import dns from "dns";
 
 dotenv.config();
 
@@ -18,9 +19,14 @@ const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: process.env.NODE_ENV === "development" ? 587 : 465,
   secure: process.env.NODE_ENV !== "development",
+
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
+  },
+
+  lookup(hostname, options, callback) {
+    return dns.lookup(hostname, { family: 4 }, callback);
   },
 });
 
