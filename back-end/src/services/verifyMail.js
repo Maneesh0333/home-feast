@@ -1,4 +1,4 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import handlebars from "handlebars";
 import { fileURLToPath } from "url";
@@ -7,14 +7,25 @@ import fs from "fs";
 
 dotenv.config();
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-if (!process.env.RESEND_API_KEY) {
-  throw new Error("Missing RESEND_API_KEY in .env");
+if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+  throw new Error("Missing EMAIL_USER or EMAIL_PASS in .env");
 }
+
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: process.env.NODE_ENV === "development" ? 587 : 465,
+  secure: process.env.NODE_ENV !== "development",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+  tls:{
+    rejectUnauthorized: false;
+  }
+});
 
 const verifyMail = async (mail, otp) => {
   try {
@@ -26,21 +37,22 @@ const verifyMail = async (mail, otp) => {
     const template = handlebars.compile(source);
 
     const htmlToSend = template({
-      otp,
+      otp: otp,
       year: new Date().getFullYear(),
       appName: "HomeFeast",
     });
 
-    const response = await resend.emails.send({
-      from: "HomeFeast <onboarding@resend.dev>",
+    await transporter.verify();
+    console.log("SMTP server is ready");
+
+    const info = await transporter.sendMail({
+      from: `"HomeFeast" <${process.env.EMAIL_USER}>`,
       to: mail,
       subject: "Your Verification Code",
       html: htmlToSend,
     });
 
-    console.log("Email sent:", response);
-
-    return response;
+    return info;
   } catch (err) {
     console.error("Email error:", err);
     throw err;
