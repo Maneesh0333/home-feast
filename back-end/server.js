@@ -4,7 +4,9 @@ import http from "http";
 
 import app from "./src/app.js";
 import { connectDB } from "./src/config/db.js";
+import dns from "dns";
 
+dns.setDefaultResultOrder("ipv4first");
 dotenv.config();
 
 const PORT = process.env.PORT || 5000;
