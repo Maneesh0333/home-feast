@@ -7,7 +7,6 @@ import http from "http";
 
 import app from "./src/app.js";
 import { connectDB } from "./src/config/db.js";
-import dns from "dns";
 
 const PORT = process.env.PORT || 5000;
 
