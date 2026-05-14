@@ -15,9 +15,7 @@ if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
 }
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: process.env.NODE_ENV === "development" ? 587 : 465,
-  secure: process.env.NODE_ENV !== "development",
+  service: "gmail",
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
