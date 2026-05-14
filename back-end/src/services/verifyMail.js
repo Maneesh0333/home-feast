@@ -20,9 +20,7 @@ const transporter = nodemailer.createTransport({
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
-  tls: {
-    rejectUnauthorized: false,
-  },
+  connectionTimeout: 10000,
 });
 
 const verifyMail = async (mail, otp) => {
@@ -40,8 +38,8 @@ const verifyMail = async (mail, otp) => {
       appName: "HomeFeast",
     });
 
-    await transporter.verify();
-    console.log("SMTP server is ready");
+    // await transporter.verify();
+    // console.log("SMTP server is ready");
 
     const info = await transporter.sendMail({
       from: `"HomeFeast" <${process.env.EMAIL_USER}>`,
