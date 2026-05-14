@@ -16,8 +16,8 @@ if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
+  port: process.env.NODE_ENV === "development" ? 587 : 465,
+  secure: !process.env.NODE_ENV === "development",
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
@@ -38,6 +38,9 @@ const verifyMail = async (mail, otp) => {
       year: new Date().getFullYear(),
       appName: "HomeFeast",
     });
+
+    await transporter.verify();
+    console.log("SMTP server is ready");
 
     const info = await transporter.sendMail({
       from: `"HomeFeast" <${process.env.EMAIL_USER}>`,
