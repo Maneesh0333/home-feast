@@ -79,7 +79,7 @@ export default function CookSection({ scrollRef }: Props) {
 
         {/* LOADING */}
         {isLoading ? (
-          <div className="flex justify-center py-10">
+          <div className="flex-1 min-h-60  flex items-center justify-center py-10">
             <Spinner />
           </div>
         ) : cooks.length === 0 ? (

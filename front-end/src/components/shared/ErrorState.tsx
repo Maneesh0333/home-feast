@@ -11,7 +11,7 @@ export default function ErrorState({
   isLoading = false,
 }: Props) {
   return (
-    <div className="flex-1 h-full flex flex-col items-center justify-center gap-3 text-center">
+    <div className="flex-1 h-full flex flex-col min-h-60 items-center justify-center gap-3 text-center">
       <h1 className="text-2xl font-semibold">{message}</h1>
 
       <SharedButton

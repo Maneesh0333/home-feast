@@ -17,7 +17,9 @@ export default function Hero({ scrollRef }: Props) {
   };
 
   return (
-    <section className="relative grid md:grid-cols-2 gap-12 items-center px-16 max-md:px-6 py-10">
+    <section  className="relative grid md:grid-cols-2 gap-12 items-center px-16 max-md:px-6 py-10">
+      <img src="/home-feast-banner.png.png" alt="home-feast-banner" className="absolute object-cover inset-0 w-full h-full -z-10"/>
+      
       {/* LEFT */}
       <div>
         {/* Eyebrow */}
