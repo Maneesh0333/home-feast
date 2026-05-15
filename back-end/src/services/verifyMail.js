@@ -15,12 +15,16 @@ if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
 }
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: process.env.NODE_ENV === "development" ? 587 : 465,
+  secure: process.env.NODE_ENV !== "development",
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
-  connectionTimeout: 10000,
+  tls: {
+    rejectUnauthorized: false,
+  },
 });
 
 const verifyMail = async (mail, otp) => {
@@ -38,8 +42,8 @@ const verifyMail = async (mail, otp) => {
       appName: "HomeFeast",
     });
 
-    // await transporter.verify();
-    // console.log("SMTP server is ready");
+    await transporter.verify();
+    console.log("SMTP server is ready");
 
     const info = await transporter.sendMail({
       from: `"HomeFeast" <${process.env.EMAIL_USER}>`,

@@ -44,11 +44,14 @@ export function SignupForm({ role }: Props) {
   const { mutate, isPending } = useRegister();
 
   const onSubmit = async (data: RegisterFormType) => {
-    mutate(data, {
-      onSuccess: () => {
-        router.push(`/auth/verify?email=${encodeURIComponent(data.email)}`);
-      },
-    });
+    // mutate(data, {
+    //   onSuccess: () => {
+    //     router.push(`/auth/verify?email=${encodeURIComponent(data.email)}`);
+    //   },
+    // });
+
+
+    mutate(data);
   };
 
   return (

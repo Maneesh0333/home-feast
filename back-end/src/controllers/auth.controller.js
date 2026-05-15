@@ -9,6 +9,48 @@ import crypto from "crypto";
 import Session from "../models/Session.model.js";
 import verifyMail from "../services/verifyMail.js";
 
+// export const register = asyncHandler(async (req, res) => {
+//   const { name, email, password, phone, signupAs } = req.body;
+
+//   // Check user already exist
+//   const existingUser = await User.findOne({ email });
+//   if (existingUser) {
+//     throw new AppError("Email already registered", 400);
+//   }
+
+//   // Hash Password
+//   const hashedPassword = await bcrypt.hash(password, 12);
+
+//   // Create verification OTP
+//   const rawOtp = crypto.randomInt(100000, 1000000).toString();
+//   const hashedOtp = crypto.createHash("sha256").update(rawOtp).digest("hex");
+
+//   const user = await User.create({
+//     name,
+//     email,
+//     password: hashedPassword,
+//     phone,
+//     role: "User",
+//     signupAs,
+//     emailVerifyOtp: hashedOtp,
+//     emailVerifyExpires: Date.now() + 10 * 60 * 1000,
+//   });
+
+//   if (signupAs === "Cook") {
+//     await Cook.create({
+//       user: user._id,
+//       verificationStatus: "Pending",
+//     });
+//   }
+
+//   await verifyMail(email, rawOtp);
+
+//   return res.status(201).json({
+//     success: true,
+//     message: "Registration successful. Please verify your email.",
+//   });
+// });
+
 export const register = asyncHandler(async (req, res) => {
   const { name, email, password, phone, signupAs } = req.body;
 
@@ -22,10 +64,8 @@ export const register = asyncHandler(async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, 12);
 
   // Create verification OTP
-  const rawOtp = crypto.randomInt(100000, 1000000).toString();
-  const hashedOtp = crypto.createHash("sha256").update(rawOtp).digest("hex");
-
-  console.log("rawOtp", rawOtp);
+  // const rawOtp = crypto.randomInt(100000, 1000000).toString();
+  // const hashedOtp = crypto.createHash("sha256").update(rawOtp).digest("hex");
 
   const user = await User.create({
     name,
@@ -34,8 +74,9 @@ export const register = asyncHandler(async (req, res) => {
     phone,
     role: "User",
     signupAs,
-    emailVerifyOtp: hashedOtp,
-    emailVerifyExpires: Date.now() + 10 * 60 * 1000,
+    isVerified: true,
+    // emailVerifyOtp: hashedOtp,
+    // emailVerifyExpires: Date.now() + 10 * 60 * 1000,
   });
 
   if (signupAs === "Cook") {
@@ -45,11 +86,11 @@ export const register = asyncHandler(async (req, res) => {
     });
   }
 
-  await verifyMail(email, rawOtp);
+  // await verifyMail(email, rawOtp);
 
   return res.status(201).json({
     success: true,
-    message: "Registration successful. Please verify your email.",
+    message: "Registration successful.",
   });
 });
 
