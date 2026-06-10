@@ -3,6 +3,7 @@ import Cook from "../models/Cook.model.js";
 import User from "../models/User.model.js";
 import AppError from "../utils/AppError.js";
 import bcrypt from "bcryptjs";
+import mongoose from "mongoose";
 
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
@@ -54,49 +55,74 @@ import verifyMail from "../services/verifyMail.js";
 export const register = asyncHandler(async (req, res) => {
   const { name, email, password, phone, signupAs } = req.body;
 
-  // Check user already exist
-  const existingUser = await User.findOne({ email });
-  if (existingUser) {
-    throw new AppError("Email already registered", 400);
-  }
+  const session = await mongoose.startSession();
 
-  const existingPhone = await User.findOne({ phone });
-  if (existingPhone) {
-    throw new AppError("Phone number already registered", 400);
-  }
+  try {
+    session.startTransaction();
 
-  // Hash Password
-  const hashedPassword = await bcrypt.hash(password, 12);
+    // Check user already exist
+    const existingUser = await User.findOne({ email }).session(session);
+    if (existingUser) {
+      throw new AppError("Email already registered", 400);
+    }
 
-  // Create verification OTP
-  // const rawOtp = crypto.randomInt(100000, 1000000).toString();
-  // const hashedOtp = crypto.createHash("sha256").update(rawOtp).digest("hex");
+    const existingPhone = await User.findOne({ phone }).session(session);
+    if (existingPhone) {
+      throw new AppError("Phone number already registered", 400);
+    }
 
-  const user = await User.create({
-    name,
-    email,
-    password: hashedPassword,
-    phone,
-    role: "User",
-    signupAs,
-    isVerified: true,
-    // emailVerifyOtp: hashedOtp,
-    // emailVerifyExpires: Date.now() + 10 * 60 * 1000,
-  });
+    // Hash Password
+    const hashedPassword = await bcrypt.hash(password, 12);
 
-  if (signupAs === "Cook") {
-    await Cook.create({
-      user: user._id,
-      verificationStatus: "Pending",
+    // Create verification OTP
+    // const rawOtp = crypto.randomInt(100000, 1000000).toString();
+    // const hashedOtp = crypto.createHash("sha256").update(rawOtp).digest("hex");
+
+    // Create User
+    const [user] = await User.create(
+      [
+        {
+          name,
+          email,
+          password: hashedPassword,
+          phone,
+          role: "User",
+          signupAs,
+          isVerified: true,
+          // emailVerifyOtp: hashedOtp,
+          // emailVerifyExpires: Date.now() + 10 * 60 * 1000,
+        },
+      ],
+      { session },
+    );
+
+    // Create Cook profile if signup as Cook
+    if (signupAs === "Cook") {
+      await Cook.create(
+        [
+          {
+            user: user._id,
+            verificationStatus: "Pending",
+          },
+        ],
+        { session },
+      );
+    }
+
+    await session.commitTransaction();
+
+    // await verifyMail(email, rawOtp);
+
+    return res.status(201).json({
+      success: true,
+      message: "Registration successful.",
     });
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    await session.endSession();
   }
-
-  // await verifyMail(email, rawOtp);
-
-  return res.status(201).json({
-    success: true,
-    message: "Registration successful.",
-  });
 });
 
 export const login = asyncHandler(async (req, res) => {

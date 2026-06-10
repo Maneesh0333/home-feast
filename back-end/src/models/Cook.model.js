@@ -52,7 +52,6 @@ const cookSchema = new mongoose.Schema(
     mealType: {
       type: String,
       enum: ["Veg", "Non-Veg", "Both"],
-      default: "",
       index: true,
     },
     category: {
@@ -63,11 +62,9 @@ const cookSchema = new mongoose.Schema(
       type: {
         type: String,
         enum: ["Point"],
-        default: "Point",
       },
       coordinates: {
         type: [Number], // [lng, lat]
-        required: true,
       },
     },
 
