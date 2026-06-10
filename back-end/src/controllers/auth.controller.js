@@ -60,6 +60,11 @@ export const register = asyncHandler(async (req, res) => {
     throw new AppError("Email already registered", 400);
   }
 
+  const existingPhone = await User.findOne({ phone });
+  if (existingPhone) {
+    throw new AppError("Phone number already registered", 400);
+  }
+
   // Hash Password
   const hashedPassword = await bcrypt.hash(password, 12);
 
