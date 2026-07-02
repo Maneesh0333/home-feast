@@ -197,26 +197,6 @@ npm run dev
 - MongoDB Atlas
 
 
-# 📈 Future Enhancements
-
-- Online payment integration
-- Mobile application
-- AI-based meal recommendations
-- Nutrition & calorie tracking
-- Real-time delivery tracking
-- Wallet & coupon system
-- Push notifications
-- Multi-language support
-
-
-# 🎯 Expected Impact
-
-- Affordable homemade food access
-- Support for local home cooks
-- Healthier eating habits
-- Reduced dependency on restaurant food
-- Digitized tiffin service ecosystem
-
 # 🎥 Demo
 https://github.com/user-attachments/assets/b0191bc1-d660-461f-af68-791d6c427588
 
