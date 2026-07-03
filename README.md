@@ -197,6 +197,23 @@ npm run dev
 - MongoDB Atlas
 
 
+#📸 Screenshots
+
+## User
+<img width="1365" height="619" alt="Screenshot 2026-07-04 001010" src="https://github.com/user-attachments/assets/4d926391-0617-46d7-90aa-cda4d6c76aab" />
+<img width="1353" height="628" alt="Screenshot 2026-07-04 001111" src="https://github.com/user-attachments/assets/1babf6d2-8352-4c00-b649-0a0febbf45e5" />
+
+
+## Admin
+<img width="1355" height="627" alt="Screenshot 2026-07-04 001327" src="https://github.com/user-attachments/assets/f7fbc2f3-c9f7-49b1-b8e8-4e81e3f10d0a" />
+<img width="1365" height="632" alt="Screenshot 2026-07-04 001717" src="https://github.com/user-attachments/assets/38fa4071-c74a-46c2-a291-f4931b989f6a" />
+
+## Cook
+<img width="1345" height="632" alt="Screenshot 2026-07-04 001533" src="https://github.com/user-attachments/assets/fec878dd-1aeb-43fd-ac90-d28a8c20732a" />
+<img width="1352" height="631" alt="Screenshot 2026-07-04 001452" src="https://github.com/user-attachments/assets/e28d5396-8fc7-4157-951e-cb64ec6d1a41" />
+
+
+
 # 🎥 Demo
 https://github.com/user-attachments/assets/b0191bc1-d660-461f-af68-791d6c427588
 
